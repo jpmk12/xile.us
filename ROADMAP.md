@@ -42,45 +42,59 @@ tracking, the ◆ mark, the multi-theme switcher) so xile.us visibly joins the f
 
 ---
 
-## 2. Current xile.us — needs confirmation
+## 2. Decisions locked
 
-I couldn't load the live site from here, so please confirm a few things (or just say
-"build fresh"):
+- **Hosting: GoDaddy cPanel (Linux "Web Hosting").** Serves **static files** over
+  HTTP and supports **(S)FTP** — no Node server, so the site must build to plain
+  static HTML/CSS/JS and be uploaded to `public_html`. Deploy pipeline:
+  **GitHub → build → SFTP to GoDaddy** (see §3).
+- **Content: migrate the old content into the new build.** We pull the existing
+  xile.us posts/photos/files forward into the new content model (MDX + images +
+  `/files`) rather than starting empty. (Heritage note: the xile.us/jpmk12 lineage
+  traces to an early-2000s **PostNuke** community — forums/tutorials/downloads. We
+  migrate the portfolio/blog/file content; legacy forum software is not carried over.)
 
-- **Where it's hosted today** (the previous draft assumed GoDaddy/cPanel — unverified).
-  Heritage signals suggest the xile.us/jpmk12 lineage was once an early-2000s
-  **PostNuke** community (forums, tutorials, downloads). If any of that is still live
-  and worth keeping (old posts, files), we migrate; otherwise we start clean.
-- **The current content** — how many existing project posts/photos/files exist, so we
-  know whether Phase 2 is "migrate" or "author from scratch."
+**Still open:** authoring workflow (§7, choice 3) — Git/MDX vs. the Sveltia `/admin`
+visual editor.
 
-This is the only real fork in the plan, and it only affects migration effort — not the
-recommended build below.
+### Migration plan (old → new)
+1. **Inventory** the current site: list every post, photo set, and downloadable file
+   (I'll need an export, FTP access, or a crawl — the live site is unreachable from my
+   sandbox, so you'll provide the source).
+2. **Convert** each post to an MDX file with the §4 frontmatter; salvage dates and
+   categories so nothing loses its history.
+3. **Re-home assets:** images into per-project folders (optimized at build), downloads
+   into `public/files/` with labels + sizes.
+4. **Redirects:** map old URLs to new slugs (a `.htaccess` 301 table on cPanel) so old
+   links and search results keep working.
+5. **Verify** post-by-post against the old site before cutover.
 
 ---
 
-## 3. Recommended stack — match the family
+## 3. Recommended stack — static build for GoDaddy cPanel
 
-Because the family already runs **Next.js + Tailwind on Vercel**, xile.us should too.
-This lets us **literally share the DEAD design tokens and theme switcher**, deploy on
-push with zero FTP, and keep one mental model across all your sites.
+GoDaddy cPanel serves **static files only** (no Node server), so the site must build to
+plain HTML/CSS/JS and upload via SFTP. The **DEAD look is just Tailwind/CSS tokens + the
+`◆` mark + the `data-theme` switcher**, so it ports to any framework — we keep the family
+*look* without needing the family *runtime*.
 
 | Concern | Choice | Why |
 |---|---|---|
-| Framework | **Next.js (App Router)** | Matches the family; static-export-capable, great image handling, room for interactivity. |
-| Styling | **Tailwind CSS** + a shared `dead-theme` token layer | Reuse `slate-950`/`emerald`, the `data-theme` switcher, and the ◆ mark from the existing sites verbatim. |
-| Content | **MDX content collections** (`content-collections` or Velite) | Each project = one MDX file with typed frontmatter (title, date, tags, cover, gallery, downloads). Version-controlled, portable. |
-| Images | `next/image` + a gallery/lightbox component | Auto-resize, lazy-load, responsive sizes — keeps photo-heavy pages fast. |
-| Downloads | `/files` library + per-project download cards | Files in `public/files/` (or **Vercel Blob** for big STL/3MF), surfaced as labeled buttons with type + size. |
-| Visual authoring (optional) | **Sveltia CMS** at `/admin` | Browser/phone editor that commits the same MDX + images to GitHub via OAuth — post without a terminal. Power-edit in MDX stays available. |
-| Deploy | **Vercel (Git push → deploy)** | Auto preview deploys per PR, instant rollback, no FTP. If xile.us's domain must stay on current DNS, point it at Vercel. |
-| Analytics | **Vercel Analytics** or Plausible/Umami | Privacy-friendly, lightweight. |
+| Framework | **Astro** (primary) — or **Next.js `output: 'export'`** | For a static FTP target, Astro is purpose-built: zero-JS by default, first-class Markdown/MDX, build-time image optimization, drops straight into `public_html`. Next.js static-export is the alternative if you want maximum code parity with the family. |
+| Styling | **Tailwind CSS** + a shared `dead-theme` token layer | Reuse `slate-950`/`emerald`, the `data-theme` switcher, and the ◆ mark from the existing sites verbatim (these are framework-agnostic CSS). |
+| Content | **MDX content collections** | Each project = one MDX file with typed frontmatter (title, date, tags, cover, gallery, downloads). Version-controlled, portable. |
+| Images | Build-time optimization via **`sharp`** + a gallery/lightbox | No server means no on-demand optimization — responsive sizes are generated **at build** and shipped static. Keeps photo-heavy pages fast on GoDaddy. |
+| Downloads | `/files` library + per-project download cards | Files in `public/files/`, uploaded with the build, surfaced as labeled buttons with type + size. (Very large STL/3MF can live in GitHub Releases and link out.) |
+| Visual authoring (optional) | **Sveltia CMS** at `/admin` | Browser/phone editor that commits the same MDX + images to GitHub — post without a terminal. Works on static hosting because writes go to GitHub, not GoDaddy. See §7. |
+| Deploy | **GitHub Actions → SFTP to GoDaddy `public_html`** | On push to `main`: build the static site, then upload `dist/` via an FTP-deploy action using GoDaddy SFTP creds stored as **repo secrets** (never committed). |
+| Analytics | **Plausible** or **Umami** | Privacy-friendly, lightweight, static-host-friendly (a single script tag). |
 
-**Why not Astro/Hugo/GoDaddy-FTP (the prior draft):** those don't share anything with
-your existing Next.js sites. Standardizing on Next.js means the theme, components, and
-deploy flow are reused, not reinvented. (If you specifically want to keep the xile.us
-domain on GoDaddy static hosting, Next.js can still `output: 'export'` to plain static
-files — so this choice doesn't lock hosting either way.)
+**Why Astro here (vs. Next.js):** the family runs Next.js for its *server* features (RSC,
+auth, dashboards) — none of which run on GoDaddy static hosting. On a static FTP target
+those benefits disappear, while Astro gives a cleaner static + image-optimization story.
+The only thing we actually need to carry from the family is the **visual** system, and
+that's pure CSS/Tailwind — so it ports 1:1. (Pick Next.js static-export instead only if
+sharing the literal component code with the family matters more than static ergonomics.)
 
 ---
 
@@ -145,18 +159,20 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
 ## 6. Phased roadmap
 
 ### Phase 0 — Decisions + assets
-- Confirm §2: current hosting, and migrate-vs-build-fresh.
-- Gather existing posts/photos/files to migrate (if any).
+- ~~Confirm hosting / migrate-vs-fresh~~ → **done: GoDaddy cPanel + migrate (§2).**
+- Collect **GoDaddy SFTP** host, user, password, and `public_html` path → store as
+  GitHub repo secrets.
+- Run the **content inventory** (§2 migration plan, step 1).
 - Get (or extract) the shared **DEAD theme tokens, font, and `icon.svg`** from the
-  existing Next.js sites so xile.us reuses them exactly.
-- Confirm deploy target: **Vercel** (recommended) or static-export to current host.
+  existing sites so xile.us reuses them exactly.
+- Decide authoring workflow (§7, choice 3).
 
 ### Phase 1 — Scaffold + design system + deploy
-- Initialize **Next.js + Tailwind**; commit to this repo.
+- Initialize **Astro + Tailwind** (or Next.js static-export); commit to this repo.
 - Port the **DEAD token layer + theme switcher + ◆ mark**; build base components
   (header/nav, project card, badge, button) + a style tile.
-- Wire **Vercel** with preview deploys (verify on a preview URL before touching the
-  live domain).
+- Stand up **GitHub Actions → SFTP** to a **staging subfolder** (e.g.
+  `public_html/preview`) so we verify on the real host before touching the live root.
 
 ### Phase 2 — Content model + first posts
 - Define the `projects` MDX collection + typed frontmatter (schema in §4).
@@ -178,8 +194,9 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
 - Performance pass (Lighthouse) + image budgets.
 
 ### Phase 6 — Launch / cutover
-- Point the **xile.us domain** at the new deploy; verify links + downloads; keep a
-  backup of the old site.
+- Back up the current `public_html`, then **swap the live root** from the preview
+  subfolder to the new build; apply the **`.htaccess` 301 redirects** (§2) for old URLs.
+- Verify links + downloads against the migration checklist; keep the old-site backup.
 - Post-launch: analytics, broken-link sweep, mobile pass.
 
 ### Later / nice-to-have
@@ -192,13 +209,23 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
 
 ## 7. Open decisions (what I need to start building)
 
-1. **Hosting today + migrate vs. build fresh** (§2).
-2. **Stack confirmation:** Next.js + Tailwind on Vercel to match the family (my
-   recommendation), or a constraint that forces static-export to the current host?
-3. **Authoring preference:** Git/MDX only, or add the **Sveltia `/admin`** visual editor
-   for phone posting?
-4. When we reach Phase 1: access to (or copies of) the family's **theme tokens, font,
-   and `icon.svg`** so xile.us reuses the real DEAD assets instead of reapproximating.
+1. ~~Hosting + migrate vs. fresh~~ → **decided: GoDaddy cPanel + migrate (§2).**
+2. ~~Stack~~ → **decided by hosting: static build (Astro recommended) → SFTP (§3).**
+3. **Authoring workflow** — the one decision left. Both produce identical MDX, so it's
+   not a one-way door:
+   - **A) Git / MDX only** — edit `.mdx` files + commit. Free, full power, but clunky
+     from a phone; a frontmatter typo can break the build.
+   - **B) Sveltia CMS at `/admin` (recommended)** — a browser/phone editor with forms +
+     drag-drop photo upload that commits MDX + images to GitHub (which triggers the
+     build). Works on static GoDaddy because writes go to GitHub, not the host. Auth
+     options, easiest first: **(1)** paste a fine-grained **PAT**, **(2)** a tiny free
+     **OAuth broker** on Cloudflare/Netlify for one-click "Sign in with GitHub," or
+     **(3)** Sveltia's hosted GitHub App. *Recommendation: ship B with PAT auth; the
+     site stays 100% on GoDaddy.*
+4. **Inputs for build time:** GoDaddy **SFTP credentials** (→ repo secrets), the
+   **content export/FTP access** to migrate from, and the family's **theme tokens,
+   font, and `icon.svg`**.
 
-> Suggested first move: confirm #1–#3, and I'll scaffold Phase 1 (Next.js + the ported
-> DEAD theme + a working Vercel preview) so you can see xile.us live in the family look.
+> Suggested first move: pick **3A or 3B**, hand me SFTP creds + a content export, and
+> I'll scaffold Phase 1 (Astro + the ported DEAD theme + a working SFTP preview deploy)
+> so you can see xile.us live on GoDaddy in the family look.
