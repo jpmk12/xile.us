@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Badge from '../components/Badge.astro';
+
+const swatches = [
+  { name: 'bg / slate-950', var: '--bg' },
+  { name: 'panel / slate-900', var: '--panel-soft' },
+  { name: 'border / slate-800', var: '--border' },
+  { name: 'muted / slate-400', var: '--muted' },
+  { name: 'text / slate-100', var: '--text' },
+  { name: 'accent', var: '--accent' },
+  { name: 'accent-bright', var: '--accent-bright' },
+];
+const themes = ['nightwatch', 'amber', 'arctic', 'mission'];
+---
+<BaseLayout title="Style tile — xile.us">
+  <section class="max-w-5xl mx-auto px-5 py-16 space-y-14">
+    <header>
+      <p class="mono text-xs text-accent tracking-widest uppercase">// design system</p>
+      <h1 class="mt-3 text-4xl font-black tracking-tight uppercase glitch">DEAD style tile</h1>
+      <p class="mt-3 max-w-xl text-[var(--muted)]">
+        The ported tokens, type, and components. Use the swatches in the header to swap
+        themes live — every element below re-tints from one accent variable.
+      </p>
+    </header>
+
+    <!-- palette -->
+    <div>
+      <h2 class="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Palette</h2>
+      <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+        {swatches.map((s) => (
+          <div class="card p-3">
+            <div class="h-12 rounded-md border border-[var(--border)]" style={`background: var(${s.var})`}></div>
+            <p class="mono text-[11px] text-[var(--muted)] mt-2">{s.name}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- themes -->
+    <div>
+      <h2 class="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Themes</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {themes.map((t) => <span class="badge mono">{t}</span>)}
+      </div>
+    </div>
+
+    <!-- type -->
+    <div>
+      <h2 class="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Type</h2>
+      <div class="mt-4 space-y-2">
+        <p class="text-5xl font-black tracking-tight uppercase">Display / black</p>
+        <p class="text-2xl font-bold tracking-wide uppercase">Heading / bold</p>
+        <p class="text-[var(--muted)] max-w-2xl">Body copy in the slate-400 muted tone — highly legible on the near-black base, used for write-ups and descriptions.</p>
+        <p class="mono text-xs text-[var(--muted)]">// mono label · 2026-06-28 · robotics / halloween</p>
+      </div>
+    </div>
+
+    <!-- components -->
+    <div>
+      <h2 class="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">Components</h2>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <Button>Solid button</Button>
+        <Button variant="ghost">Ghost button</Button>
+        <Badge status="complete" />
+        <Badge status="in-progress" />
+        <span class="chip" style="width:40px;height:40px"><span>◆</span></span>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

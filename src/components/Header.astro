@@ -1,0 +1,23 @@
+---
+import Mark from './Mark.astro';
+import ThemeSwitcher from './ThemeSwitcher.astro';
+import { link } from '../lib/link';
+
+const nav = [
+  { href: link('/projects'), label: 'Projects' },
+  { href: link('/files'), label: 'Files' },
+  { href: link('/about'), label: 'About' },
+  { href: link('/style-tile'), label: 'Style' },
+];
+---
+<header class="header-bg sticky top-0 z-40 border-b border-[var(--border)]">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+    <Mark />
+    <nav class="hidden sm:flex items-center gap-6 text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
+      {nav.map((n) => (
+        <a href={n.href} class="hover:text-[var(--accent-bright)] transition-colors">{n.label}</a>
+      ))}
+    </nav>
+    <ThemeSwitcher />
+  </div>
+</header>

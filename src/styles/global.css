@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   DEAD design tokens — ported from the family sites (justinpoole.com,
+   jpmk12.net). Base = slate-950 + emerald accent. The accent is a CSS var
+   so the `data-theme` switcher can swap palettes (nightwatch/amber/arctic/
+   mission) exactly like the family's "app-theme" system.
+   ========================================================================= */
+:root,
+[data-theme="nightwatch"] {
+  --bg: #020617;          /* slate-950 */
+  --panel: #0b1220;
+  --panel-soft: #0f172a;  /* slate-900 */
+  --border: #1e293b;      /* slate-800 */
+  --border-soft: #141d30;
+  --text: #f1f5f9;        /* slate-100 */
+  --muted: #94a3b8;       /* slate-400 */
+  --faint: #475569;       /* slate-600 */
+  --accent: #10b981;      /* emerald-500 */
+  --accent-bright: #34d399; /* emerald-400 */
+  --on-accent: #020617;
+}
+[data-theme="amber"]  { --accent: #f59e0b; --accent-bright: #fbbf24; --on-accent: #1a1205; }
+[data-theme="arctic"] { --accent: #38bdf8; --accent-bright: #7dd3fc; --on-accent: #04121b; }
+[data-theme="mission"]{ --accent: #ef4444; --accent-bright: #f87171; --on-accent: #1a0606; }
+
+html { color-scheme: dark; background: var(--bg); }
+body { background: var(--bg); color: var(--text); }
+
+/* accent-aware helpers (Tailwind handles layout; these handle theme color) */
+.text-accent { color: var(--accent-bright); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, "Cascadia Code", monospace; }
+
+/* the ◆ brand chip */
+.chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 0.375rem;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  color: var(--accent-bright);
+  flex: none;
+}
+
+/* sticky header backdrop (kept out of Tailwind so color-mix can use spaces) */
+.header-bg {
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+/* buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  padding: .625rem 1.25rem; border-radius: .375rem; line-height: 1;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+  cursor: pointer;
+}
+.btn-solid { background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent); }
+.btn-solid:hover { background: var(--accent-bright); border-color: var(--accent-bright); }
+.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent-bright); }
+
+/* status badge */
+.badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .625rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  padding: .2rem .55rem; border-radius: .375rem; border: 1px solid var(--border);
+  color: var(--muted);
+}
+.badge-dot { width: .4rem; height: .4rem; border-radius: 9999px; background: var(--accent); flex: none; }
+.badge-progress .badge-dot { background: #f59e0b; }
+
+/* panels / cards */
+.card {
+  background: linear-gradient(180deg, var(--panel-soft), var(--panel));
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.card:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+/* hairline blueprint grid */
+.grid-lines {
+  background-image:
+    linear-gradient(var(--border-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center;
+}
+
+/* sparing RGB-split glitch on hover — reduced-motion safe (see below) */
+.glitch:hover { animation: glitch .4s steps(2, jump-none) 1; }
+@keyframes glitch {
+  0%   { text-shadow: -2px 0 var(--accent-bright), 2px 0 #ef4444; }
+  50%  { text-shadow: 2px 0 var(--accent-bright), -2px 0 #ef4444; }
+  100% { text-shadow: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch:hover { animation: none; }
+  .card { transition: none; }
+  * { scroll-behavior: auto; }
+}

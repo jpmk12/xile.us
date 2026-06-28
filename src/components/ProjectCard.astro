@@ -1,0 +1,24 @@
+---
+import Badge from './Badge.astro';
+import { link } from '../lib/link';
+import type { Project } from '../data/projects';
+
+interface Props { project: Project; }
+const { project } = Astro.props;
+const date = project.date;
+---
+<a href={link(`/projects/${project.slug}`)} class="card group block overflow-hidden">
+  <div class="aspect-[16/10] grid-lines border-b border-[var(--border)] relative flex items-center justify-center">
+    <span class="chip" style="width:44px;height:44px"><span>◆</span></span>
+    <span class="absolute top-3 right-3"><Badge status={project.status} /></span>
+  </div>
+  <div class="p-5">
+    <div class="mono text-xs text-[var(--muted)] flex items-center gap-2">
+      <span>{date}</span><span>·</span><span>{project.tags.join(' / ')}</span>
+    </div>
+    <h3 class="mt-2 text-lg font-bold tracking-wide uppercase glitch group-hover:text-[var(--accent-bright)] transition-colors">
+      {project.title}
+    </h3>
+    <p class="mt-2 text-sm text-[var(--muted)] line-clamp-2">{project.summary}</p>
+  </div>
+</a>

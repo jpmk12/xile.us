@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Placeholder shape for the Phase 3 downloads library.
+const sample = [
+  { label: 'Skull v2 — wiring diagram', type: 'PDF', size: '1.2 MB' },
+  { label: 'Skull v2 — jaw assembly', type: 'STL', size: '4.8 MB' },
+  { label: 'Fog controller — firmware', type: 'ZIP', size: '320 KB' },
+];
+---
+<BaseLayout title="Files — xile.us">
+  <section class="max-w-4xl mx-auto px-5 py-16">
+    <p class="mono text-xs text-accent tracking-widest uppercase">// downloads</p>
+    <h1 class="mt-3 text-4xl font-black tracking-tight uppercase">File library</h1>
+    <p class="mt-3 max-w-xl text-[var(--muted)]">
+      One place for every diagram, BOM, firmware build, and 3D file. The full library
+      lands in Phase 3 — here's the download-card style it will use.
+    </p>
+
+    <div class="mt-8 divide-y divide-[var(--border)] card">
+      {sample.map((f) => (
+        <div class="flex items-center justify-between gap-4 p-4">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="chip" style="width:36px;height:36px"><span class="text-xs">◆</span></span>
+            <span class="truncate">{f.label}</span>
+          </div>
+          <div class="flex items-center gap-3 mono text-xs text-[var(--muted)] flex-none">
+            <span>{f.type}</span><span>{f.size}</span>
+            <span class="badge">Download</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
