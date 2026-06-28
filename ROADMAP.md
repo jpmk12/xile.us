@@ -1,164 +1,204 @@
 # xile.us — Modernization Roadmap
 
-A plan to rebuild xile.us as a fast, modern **living portfolio** for makerspace
-projects (code, robotics, 3D printing, Halloween) that's easy to post to, shows
-off photo galleries, and offers clean file downloads — wrapped in an
-**industrial-maker / glitch** aesthetic carried over from the "DEAD" designs.
+A plan to rebuild **xile.us** as a fast, modern **living portfolio** for makerspace
+projects (code · robotics · 3D printing · Halloween) that's easy to post to, shows
+photo galleries well, and offers clean file downloads — wrapped in the **"DEAD"
+design system** already running across the family of sites.
+
+> **This roadmap is grounded in the live family sites**, not guesses. I read the
+> actual shipped source of `justinpoole.com` and `jpmk12.net` to extract the real
+> stack and design tokens (see §1). I could **not** reach `xile.us` or
+> `deadplanning.com` directly — this environment's network policy denies them at
+> the proxy, and the Wayback Machine too — so the current-xile.us specifics in §2
+> are marked as **needs confirmation**.
 
 ---
 
-## 0. Current situation (read first)
+## 1. What the live "DEAD" sites actually are (evidence)
 
-- **The GitHub repo is empty.** `jpmk12/xile.us` has no commits or branches. The
-  code currently powering the live site is not in this repo. Before/while we
-  build, we'll either (a) push the existing site files here so they're version
-  controlled, or (b) build fresh and retire the old files.
-- **Hosting stays on GoDaddy.** This is the key constraint. GoDaddy does *not*
-  auto-deploy from GitHub, so the new build needs a pipeline:
-  **GitHub → build static site → upload to GoDaddy over (S)FTP.** This works
-  cleanly *if* the GoDaddy plan is **cPanel "Web Hosting" (Linux)**, which
-  serves static files and supports FTP. It does **not** work the same way on
-  **Managed WordPress** or the **Website Builder** plans.
-  → **Action: confirm which GoDaddy product the site runs on.** Everything below
-  assumes cPanel Web Hosting.
+`justinpoole.com` and `jpmk12.net` currently both serve the **same modern app** — a
+gated "DEAD's Dashboard." Reading their shipped HTML/CSS gives us the real system:
+
+- **Framework:** **Next.js** (App Router, React Server Components) + **Tailwind CSS**,
+  custom font via `next/font` (woff2). Almost certainly deployed on **Vercel**.
+- **Base palette:** `bg-slate-950` (`#020617`) background, `text-slate-100` body,
+  `text-slate-400` for muted/secondary text.
+- **Accent:** **emerald** — `emerald-500` solid (buttons), `emerald-400` (icons/text),
+  with `emerald-500/10` fills behind `emerald-500/30` borders for chips/badges.
+- **Type treatment:** headings are `font-bold tracking-widest uppercase`; buttons are
+  `text-xs font-bold uppercase tracking-wider`, `rounded-md`. Reads as a clean
+  **ops/terminal** look.
+- **Brand mark:** a **`◆` diamond** glyph inside a `w-9 h-9 rounded-md` emerald-tinted
+  chip (`bg-emerald-500/10 border border-emerald-500/30`). There's an `icon.svg`.
+- **Theming:** an `html[data-theme]` system with **swappable themes** —
+  `nightwatch` (default), plus `amber`, `arctic`, `mission` — persisted to
+  `localStorage` under `app-theme`. This is the reusable backbone we want.
+- **Mood:** sleek dark "intelligence/ops dashboard," **not** Halloween-gothic. Spooky
+  is optional flavor; the core is restrained, high-contrast, monospace-adjacent.
+
+**Takeaway:** "incorporate DEAD design elements" doesn't mean inventing a haunted
+theme — it means **reusing this exact token set** (slate-950 + emerald, uppercase
+tracking, the ◆ mark, the multi-theme switcher) so xile.us visibly joins the family.
 
 ---
 
-## 1. Recommended stack
+## 2. Current xile.us — needs confirmation
+
+I couldn't load the live site from here, so please confirm a few things (or just say
+"build fresh"):
+
+- **Where it's hosted today** (the previous draft assumed GoDaddy/cPanel — unverified).
+  Heritage signals suggest the xile.us/jpmk12 lineage was once an early-2000s
+  **PostNuke** community (forums, tutorials, downloads). If any of that is still live
+  and worth keeping (old posts, files), we migrate; otherwise we start clean.
+- **The current content** — how many existing project posts/photos/files exist, so we
+  know whether Phase 2 is "migrate" or "author from scratch."
+
+This is the only real fork in the plan, and it only affects migration effort — not the
+recommended build below.
+
+---
+
+## 3. Recommended stack — match the family
+
+Because the family already runs **Next.js + Tailwind on Vercel**, xile.us should too.
+This lets us **literally share the DEAD design tokens and theme switcher**, deploy on
+push with zero FTP, and keep one mental model across all your sites.
 
 | Concern | Choice | Why |
 |---|---|---|
-| Site framework | **Astro** | Built for content + media portfolios. Ships zero JS by default (fast), first-class Markdown/MDX, built-in image optimization, outputs plain static files that drop straight into GoDaddy's `public_html`. |
-| Content | **Markdown/MDX content collections** | Blog posts and projects as Markdown files with typed frontmatter (title, date, tags, cover, downloads). Version-controlled, portable, future-proof. |
-| Visual editing (the "hybrid" half) | **Sveltia CMS** (modern Decap/Netlify-CMS fork) | A browser admin at `/admin` that reads/writes the same Markdown files and commits to GitHub via OAuth. Lets you post from a laptop or phone without opening a terminal — while power-editing in Markdown stays available. |
-| Images | Astro `<Image>` + a gallery component | Auto-resizes/compresses, lazy-loads, generates responsive sizes. Keeps download pages snappy even with lots of photos. |
-| Downloads | A `/files` library + per-project download cards | Docs/instructions (PDF, wiring diagrams, BOMs) stored in repo under `public/files/`, surfaced as labeled download buttons with size + type. |
-| Deploy | **GitHub Actions → SFTP to GoDaddy** | On every push to `main`: build Astro, then upload `dist/` to `public_html` via FTP-Deploy-Action using GoDaddy FTP creds stored as repo secrets. |
-| Styling | Tailwind CSS + a small custom theme layer | Fast to build the glitch/industrial system; purges unused CSS for tiny payloads. |
+| Framework | **Next.js (App Router)** | Matches the family; static-export-capable, great image handling, room for interactivity. |
+| Styling | **Tailwind CSS** + a shared `dead-theme` token layer | Reuse `slate-950`/`emerald`, the `data-theme` switcher, and the ◆ mark from the existing sites verbatim. |
+| Content | **MDX content collections** (`content-collections` or Velite) | Each project = one MDX file with typed frontmatter (title, date, tags, cover, gallery, downloads). Version-controlled, portable. |
+| Images | `next/image` + a gallery/lightbox component | Auto-resize, lazy-load, responsive sizes — keeps photo-heavy pages fast. |
+| Downloads | `/files` library + per-project download cards | Files in `public/files/` (or **Vercel Blob** for big STL/3MF), surfaced as labeled buttons with type + size. |
+| Visual authoring (optional) | **Sveltia CMS** at `/admin` | Browser/phone editor that commits the same MDX + images to GitHub via OAuth — post without a terminal. Power-edit in MDX stays available. |
+| Deploy | **Vercel (Git push → deploy)** | Auto preview deploys per PR, instant rollback, no FTP. If xile.us's domain must stay on current DNS, point it at Vercel. |
+| Analytics | **Vercel Analytics** or Plausible/Umami | Privacy-friendly, lightweight. |
 
-**Why Astro over the alternatives:** Hugo is faster to build but its templating
-is clunkier for rich project pages; Next.js is overkill (and its best features
-assume a Node server GoDaddy shared hosting won't run). Astro hits the sweet
-spot: static output, great content ergonomics, and room to add interactivity
-(the glitch effects) only where you want it.
+**Why not Astro/Hugo/GoDaddy-FTP (the prior draft):** those don't share anything with
+your existing Next.js sites. Standardizing on Next.js means the theme, components, and
+deploy flow are reused, not reinvented. (If you specifically want to keep the xile.us
+domain on GoDaddy static hosting, Next.js can still `output: 'export'` to plain static
+files — so this choice doesn't lock hosting either way.)
 
 ---
 
-## 2. Information architecture (site map)
+## 4. Information architecture (site map)
 
 ```
-/                     Home — latest projects feed + hero
-/projects             Gallery grid, filterable by tag (code · robotics · 3D · Halloween)
-/projects/<slug>      Project / blog detail: write-up, photo gallery, downloads, BOM
-/files                Downloads library — all docs/files in one searchable place
+/                     Home — hero + latest projects feed (+ theme switcher)
+/projects             Gallery grid, filterable by tag (code · robotics · 3d · halloween)
+/projects/<slug>      Project = blog post: write-up, photo gallery, downloads, status
+/files                Downloads library — every file in one searchable place
 /about                Who you are + the makerspace
 /tags/<tag>           Everything under a tag
-/rss.xml              Feed so people can subscribe
-/admin                Sveltia CMS (visual editor)
+/rss.xml              Subscribe feed
+/admin                Sveltia CMS (optional visual editor)
 ```
 
-**One content model does double duty.** A "project" *is* a blog post: it has a
-date and a write-up (blog), plus photos, tags, and downloads (portfolio). No
-separate "blog vs projects" split to maintain.
+**One content model does double duty.** A "project" *is* a blog post — it has a date and
+a write-up (blog) plus photos, tags, and downloads (portfolio). No separate blog-vs-
+projects split to maintain.
 
-Project frontmatter (the fields you fill in per post):
+Project frontmatter (the fields you fill per post):
 ```yaml
 title: "Animatronic Skull v2"
 date: 2026-06-20
 tags: [robotics, halloween, 3d-printing]
+status: complete          # or: in-progress
 cover: ./cover.jpg
 gallery: [./build1.jpg, ./build2.jpg]
 downloads:
   - { label: "Wiring diagram (PDF)", file: "/files/skull-v2-wiring.pdf" }
-  - { label: "Bill of materials",     file: "/files/skull-v2-bom.pdf" }
-status: complete   # or: in-progress
+  - { label: "STL — jaw assembly",    file: "/files/skull-v2-jaw.stl" }
 ```
 
 ---
 
-## 3. Design direction — "Industrial maker / glitch"
+## 5. Design direction — extend "DEAD," don't reinvent it
 
-Carry the DEAD energy forward without it becoming a costume. The throughline:
-**a workshop terminal that's slightly haunted.**
+Lift the system from §1 directly:
 
-- **Palette:** near-black base (`#0a0a0b`), graphite panels, bone/off-white
-  text, one hot accent (toxic green `#39ff14` *or* warning amber) plus a danger
-  red for hover/alerts. Restraint is what makes it feel designed, not Halloween-y.
-- **Type:** a condensed industrial display face for headings (stencil/grotesque),
-  a clean monospace for metadata/labels (gives the "terminal/maker" read), a
-  highly legible sans for body copy.
-- **Motifs:** thin hairline grids/blueprint lines, exposed-circuit traces,
-  corner registration marks, "// status" labels, tape/label-maker tags for
-  categories.
-- **Glitch, used sparingly:** RGB-split text on hover for titles, a subtle
-  scanline/CRT overlay toggle, occasional flicker on the logo. Effects are
-  CSS-driven, behind `prefers-reduced-motion`, and never block reading.
-- **Accessibility guardrail:** dark theme with AA-contrast text, motion respects
-  reduced-motion, glitch never applied to body text. Spooky ≠ unreadable.
+- **Tokens:** `--bg: #020617` (slate-950), graphite panels (`slate-900/800`), `slate-100`
+  text, `slate-400` muted, **emerald** accent (`emerald-500/400`, `/10` fills + `/30`
+  borders). Keep the **theme switcher** (`nightwatch` default + `amber`/`arctic`/
+  `mission`) so xile.us inherits the family's swappable looks.
+- **Type:** the family's uppercase, `tracking-widest`, bold display treatment for
+  headings and category labels; a clean sans for body; monospace for metadata
+  (date · tags · file sizes) to reinforce the maker/terminal read.
+- **Brand mark:** reuse the **◆ chip** as the xile.us logo lockup so the family
+  connection is instant.
+- **Motifs (light touch):** hairline/blueprint grid lines, corner registration marks,
+  `// status` labels, status badges (`complete` / `in-progress`), label-maker tags for
+  categories. These echo the ops-dashboard vibe without becoming a costume.
+- **Spooky as seasoning:** a subtle scanline/CRT toggle or RGB-split-on-hover for
+  titles — **CSS-only, behind `prefers-reduced-motion`, never on body text.** The
+  `mission`/`amber` themes can lean Halloween for October.
+- **Accessibility guardrail:** AA contrast on dark, motion respects reduced-motion,
+  effects never block reading.
 
-I'll produce a one-page style tile early (Phase 1) so we lock the look before
-building pages on top of it.
+I'll produce a one-page **style tile** in Phase 1 to lock the look before building pages.
 
 ---
 
-## 4. Phased roadmap
+## 6. Phased roadmap
 
-### Phase 0 — Foundations (decisions + assets)
-- Confirm GoDaddy plan type (cPanel vs Managed WP vs Website Builder).
-- Collect GoDaddy FTP/SFTP host, user, password, and target directory.
-- Gather existing content: current posts, photos, any files, the old "DEAD"
-  design assets (screenshots, fonts, colors, logo).
-- Decide: migrate existing site files into the repo, or start clean.
+### Phase 0 — Decisions + assets
+- Confirm §2: current hosting, and migrate-vs-build-fresh.
+- Gather existing posts/photos/files to migrate (if any).
+- Get (or extract) the shared **DEAD theme tokens, font, and `icon.svg`** from the
+  existing Next.js sites so xile.us reuses them exactly.
+- Confirm deploy target: **Vercel** (recommended) or static-export to current host.
 
-### Phase 1 — Scaffold + design system + deploy pipeline
-- Initialize Astro + Tailwind project; commit to this repo.
-- Build the industrial/glitch theme (tokens, fonts, base components) + a style tile.
-- Stand up the GitHub Actions → SFTP-to-GoDaddy deploy on a staging path first
-  (e.g. `xile.us/preview`) so we can verify before touching the live site.
+### Phase 1 — Scaffold + design system + deploy
+- Initialize **Next.js + Tailwind**; commit to this repo.
+- Port the **DEAD token layer + theme switcher + ◆ mark**; build base components
+  (header/nav, project card, badge, button) + a style tile.
+- Wire **Vercel** with preview deploys (verify on a preview URL before touching the
+  live domain).
 
 ### Phase 2 — Content model + first posts
-- Define the `projects` content collection + frontmatter schema.
-- Migrate (or author) 3–5 real projects across your categories to pressure-test
-  the layout with actual content.
-- Project detail page: write-up, metadata, status badge.
+- Define the `projects` MDX collection + typed frontmatter (schema in §4).
+- Author/migrate **3–5 real projects** across categories to pressure-test the layout.
+- Build the project detail page: write-up, metadata, status badge.
 
 ### Phase 3 — Galleries + downloads
-- Responsive, optimized photo gallery with lightbox.
-- `/files` downloads library + per-project download cards (label, type, size).
-- Tag filtering on `/projects`.
+- Responsive, optimized **photo gallery + lightbox** (`next/image`).
+- **`/files`** downloads library + per-project download cards (label · type · size).
+- **Tag filtering** on `/projects`.
 
-### Phase 4 — Hybrid authoring (visual CMS)
-- Wire up Sveltia CMS at `/admin` with GitHub OAuth.
-- Configure post + image + download fields so you can publish from a browser or
-  phone. Document the "new post" flow.
+### Phase 4 — Hybrid authoring (optional visual CMS)
+- Wire **Sveltia CMS** at `/admin` with GitHub OAuth; configure post/image/download
+  fields so you can publish from a laptop **or phone**. Document the "new post" flow.
 
 ### Phase 5 — Polish
-- Glitch interactions, scanline toggle, hover states.
-- RSS feed, SEO/meta/Open Graph cards, sitemap, favicon set.
-- Performance pass (Lighthouse), image budgets, 404 page.
+- Glitch/scanline interactions and hover states (reduced-motion safe).
+- RSS feed, SEO/Open Graph cards, sitemap, favicon set, 404 page.
+- Performance pass (Lighthouse) + image budgets.
 
 ### Phase 6 — Launch / cutover
-- Point the live GoDaddy `public_html` at the new build (swap from the preview
-  path), verify downloads and links, keep a backup of the old site.
-- Post-launch checklist: analytics (privacy-friendly, e.g. Plausible/Umami),
-  broken-link sweep, mobile pass.
+- Point the **xile.us domain** at the new deploy; verify links + downloads; keep a
+  backup of the old site.
+- Post-launch: analytics, broken-link sweep, mobile pass.
 
 ### Later / nice-to-have
-- Client-side search (Pagefind) once there are enough posts.
-- "Project series" / build-log threading for multi-part projects.
-- Newsletter capture, a printable BOM view, STL/3MF previews if you later add
-  3D files.
+- Client-side search (**Pagefind**) once there are enough posts.
+- **STL/3MF previews** for 3D files; printable BOM view.
+- "Project series" / build-log threading for multi-part builds.
+- Shared **component package** across the family so all DEAD sites pull one theme.
 
 ---
 
-## 5. What I need from you to start building
+## 7. Open decisions (what I need to start building)
 
-1. **GoDaddy plan type** (cPanel Web Hosting / Managed WordPress / Website Builder).
-2. **Whether to push your existing site files** into this repo, or build fresh.
-3. **DEAD design assets** — screenshots, fonts, logo, exact colors — so the new
-   theme echoes the old one instead of guessing.
-4. **GoDaddy FTP credentials** when we reach Phase 1 (added as GitHub secrets,
-   never committed).
+1. **Hosting today + migrate vs. build fresh** (§2).
+2. **Stack confirmation:** Next.js + Tailwind on Vercel to match the family (my
+   recommendation), or a constraint that forces static-export to the current host?
+3. **Authoring preference:** Git/MDX only, or add the **Sveltia `/admin`** visual editor
+   for phone posting?
+4. When we reach Phase 1: access to (or copies of) the family's **theme tokens, font,
+   and `icon.svg`** so xile.us reuses the real DEAD assets instead of reapproximating.
 
-> Suggested first move: confirm #1 and #2, and I'll scaffold Phase 1 (Astro +
-> theme + a working deploy to a GoDaddy preview path) so you can see it live.
+> Suggested first move: confirm #1–#3, and I'll scaffold Phase 1 (Next.js + the ported
+> DEAD theme + a working Vercel preview) so you can see xile.us live in the family look.
