@@ -14,6 +14,9 @@ const projects = defineCollection({
     cover: z.string().optional(),
     draft: z.boolean().default(false),
     legacyUrl: z.string().optional(),
+    downloads: z
+      .array(z.object({ label: z.string(), file: z.string() }))
+      .default([]),
   }),
 });
 

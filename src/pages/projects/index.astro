@@ -13,16 +13,53 @@ const tags = Array.from(new Set(sorted.flatMap((p) => p.data.tags))).sort();
     <p class="mono text-xs text-accent tracking-widest uppercase">// archive</p>
     <h1 class="mt-3 text-4xl font-black tracking-tight uppercase">Projects</h1>
     <p class="mt-3 max-w-xl text-[var(--muted)]">
-      Every build, newest first — migrated from the original xile.us. Tag filtering
-      becomes interactive in Phase 3.
+      Every build, newest first — migrated from the original xile.us. Tap a tag to filter.
     </p>
 
-    <div class="mt-6 flex flex-wrap gap-2">
-      {tags.map((t) => <span class="badge mono">{t}</span>)}
+    <div id="tag-filter" class="mt-6 flex flex-wrap gap-2">
+      <button type="button" class="tag-btn badge mono is-active" data-tag="*">All</button>
+      {tags.map((t) => (
+        <button type="button" class="tag-btn badge mono" data-tag={t}>{t}</button>
+      ))}
     </div>
 
-    <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {sorted.map((p) => <ProjectCard entry={p} />)}
+    <div id="project-grid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {sorted.map((p) => (
+        <div class="proj" data-tags={p.data.tags.join(' ')}>
+          <ProjectCard entry={p} />
+        </div>
+      ))}
     </div>
+    <p id="proj-empty" class="mt-6 mono text-xs text-[var(--faint)]" hidden>No projects with that tag.</p>
   </section>
 </BaseLayout>
+
+<style>
+  .tag-btn { cursor: pointer; transition: color .15s ease, border-color .15s ease; }
+  .tag-btn.is-active { color: var(--on-accent); background: var(--accent); border-color: var(--accent); }
+  .tag-btn:not(.is-active):hover { color: var(--accent-bright); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+</style>
+
+<script is:inline>
+  (function () {
+    var btns = [].slice.call(document.querySelectorAll('.tag-btn'));
+    var cards = [].slice.call(document.querySelectorAll('#project-grid .proj'));
+    var empty = document.getElementById('proj-empty');
+    function apply(tag) {
+      var shown = 0;
+      cards.forEach(function (c) {
+        var has = tag === '*' || (' ' + c.getAttribute('data-tags') + ' ').indexOf(' ' + tag + ' ') !== -1;
+        c.style.display = has ? '' : 'none';
+        if (has) shown++;
+      });
+      if (empty) empty.hidden = shown !== 0;
+    }
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        btns.forEach(function (x) { x.classList.remove('is-active'); });
+        b.classList.add('is-active');
+        apply(b.getAttribute('data-tag'));
+      });
+    });
+  })();
+</script>

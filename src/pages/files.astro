@@ -1,52 +1,80 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { link } from '../lib/link';
+import { fileMeta } from '../lib/files';
 
-// Real downloadable files migrated from the legacy xile.us (Arduino code
-// backups for the remote-control robot). The full library + per-project
-// download cards expand in Phase 3.
-const files = [
-  {
-    label: 'Remote Control — Arduino sketch backup',
-    href: '/legacy-uploads/2013/07/Remote-Control-Backup.txt',
-    type: 'TXT',
-    project: 'the-journey-to-building-remote-controls',
-  },
-  {
-    label: 'Remote Robot — Arduino sketch',
-    href: '/legacy-uploads/2013/07/Remote-Robot.txt',
-    type: 'TXT',
-    project: 'arduino-powered-remote-control-robot',
-  },
-];
+// Aggregate every download declared across project frontmatter into one
+// searchable library. Grows automatically as posts add `downloads`.
+const projects = await getCollection('projects');
+const files = projects
+  .filter((p) => !p.data.draft)
+  .flatMap((p) =>
+    p.data.downloads.map((dl) => ({
+      ...dl,
+      ...fileMeta(dl.file),
+      project: p.id,
+      projectTitle: p.data.title,
+      date: p.data.date,
+    }))
+  )
+  .sort((a, b) => +b.date - +a.date);
 ---
 <BaseLayout title="Files — xile.us">
   <section class="max-w-4xl mx-auto px-5 py-16">
     <p class="mono text-xs text-accent tracking-widest uppercase">// downloads</p>
     <h1 class="mt-3 text-4xl font-black tracking-tight uppercase">File library</h1>
     <p class="mt-3 max-w-xl text-[var(--muted)]">
-      Diagrams, BOMs, firmware, and 3D files in one place. Searchable filtering and
-      per-project grouping arrive in Phase 3.
+      Every diagram, sketch, BOM, and 3D file from across the projects — {files.length} in all.
     </p>
 
-    <div class="mt-8 divide-y divide-[var(--border)] card">
+    <input
+      id="file-search"
+      type="search"
+      placeholder="Search files…"
+      aria-label="Search files"
+      class="mt-6 w-full bg-[var(--panel-soft)] border border-[var(--border)] rounded-md px-4 py-2.5 text-sm outline-none focus:border-[var(--accent-bright)] transition-colors"
+    />
+
+    <div id="file-list" class="mt-5 divide-y divide-[var(--border)] card">
       {files.map((f) => (
-        <a href={link(f.href)} download class="flex items-center justify-between gap-4 p-4 hover:bg-[var(--panel-soft)] transition-colors">
+        <div
+          class="file-row flex items-center justify-between gap-4 p-4 hover:bg-[var(--panel-soft)] transition-colors"
+          data-search={`${f.label} ${f.projectTitle} ${f.ext}`.toLowerCase()}
+        >
           <div class="flex items-center gap-3 min-w-0">
             <span class="chip" style="width:36px;height:36px"><span class="text-xs">◆</span></span>
-            <span class="truncate">{f.label}</span>
+            <div class="min-w-0">
+              <a href={link(f.file)} download class="block truncate hover:text-[var(--accent-bright)]">{f.label}</a>
+              <a href={link(`/projects/${f.project}`)} class="mono text-xs text-[var(--muted)] hover:text-[var(--accent-bright)]">{f.projectTitle}</a>
+            </div>
           </div>
-          <div class="flex items-center gap-3 mono text-xs text-[var(--muted)] flex-none">
-            <span>{f.type}</span>
+          <a href={link(f.file)} download class="flex items-center gap-3 mono text-xs text-[var(--muted)] flex-none hover:text-[var(--accent-bright)]">
+            <span>{f.ext}</span>{f.size && <span>{f.size}</span>}
             <span class="badge">Download</span>
-          </div>
-        </a>
+          </a>
+        </div>
       ))}
     </div>
-
-    <p class="mt-4 mono text-xs text-[var(--faint)]">
-      Files resolve once the legacy <code>wp-content/uploads</code> assets are added under
-      <code>public/legacy-uploads/</code> — see MIGRATION.md.
-    </p>
+    <p id="file-empty" class="mt-4 mono text-xs text-[var(--faint)]" hidden>No files match that search.</p>
   </section>
 </BaseLayout>
+
+<script is:inline>
+  (function () {
+    var input = document.getElementById('file-search');
+    var rows = [].slice.call(document.querySelectorAll('.file-row'));
+    var empty = document.getElementById('file-empty');
+    if (!input) return;
+    input.addEventListener('input', function () {
+      var q = input.value.trim().toLowerCase();
+      var shown = 0;
+      rows.forEach(function (r) {
+        var hit = !q || (r.getAttribute('data-search') || '').indexOf(q) !== -1;
+        r.style.display = hit ? '' : 'none';
+        if (hit) shown++;
+      });
+      if (empty) empty.hidden = shown !== 0;
+    });
+  })();
+</script>

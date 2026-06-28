@@ -6,6 +6,8 @@ status: complete
 summary: "I recently finished a project that involves an Arduino powered remote control. I learned a lot of things along the way about setup and programming that I\u2026"
 cover: "/legacy-uploads/2013/07/Remote-4.jpg"
 legacyUrl: "/the-journey-to-building-remote-controls/"
+downloads:
+  - { label: "Remote Control — Arduino sketch backup", file: "/legacy-uploads/2013/07/Remote-Control-Backup.txt" }
 ---
 <span style="line-height: 1.714285714; font-size: 1rem;">I recently finished a project that involves an Arduino powered remote control. I learned a lot of things along the way about setup and programming that I wanted to share to help others avoid pitfalls.</span>
 

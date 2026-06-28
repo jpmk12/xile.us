@@ -191,10 +191,13 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
   the `fetch-legacy-uploads` CI workflow → `public/legacy-uploads/`; post photos and
   file downloads now render.
 
-### Phase 3 — Galleries + downloads
-- Responsive, optimized **photo gallery + lightbox** (`next/image`).
-- **`/files`** downloads library + per-project download cards (label · type · size).
-- **Tag filtering** on `/projects`.
+### Phase 3 — Galleries + downloads  ✅
+- ✅ **Photo lightbox** (`Lightbox.astro`): click any post image → fullscreen viewer
+  with prev/next, counter, keyboard nav; reduced-motion safe, zero deps.
+- ✅ **`/files`** library — aggregates `downloads` frontmatter across all projects with
+  build-time file sizes, a search box, and links back to the source project; plus a
+  per-project **// files** section on detail pages.
+- ✅ **Interactive tag filtering** on `/projects` (client-side, no reload).
 
 ### Phase 4 — Hybrid authoring (optional visual CMS)
 - Wire **Sveltia CMS** at `/admin` with GitHub OAuth; configure post/image/download

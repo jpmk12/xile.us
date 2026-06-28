@@ -6,6 +6,8 @@ status: complete
 summary: "I have been working on a Arduino Powered Robot that could be remote controlled. (I will continue to update this with more detail). The video below shows the\u2026"
 cover: "/legacy-uploads/2013/07/Remote-4.jpg"
 legacyUrl: "/arduino-powered-remote-control-robot/"
+downloads:
+  - { label: "Remote Robot — Arduino sketch", file: "/legacy-uploads/2013/07/Remote-Robot.txt" }
 ---
 I have been working on a Arduino Powered Robot that could be remote controlled. (I will continue to update this with more detail). The video below shows the prototype robot working via the remote control. This article will describe how I built the Robot, the materials used, and the program that controls it.
 

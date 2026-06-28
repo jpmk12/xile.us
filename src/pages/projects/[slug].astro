@@ -2,7 +2,9 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Badge from '../../components/Badge.astro';
+import Lightbox from '../../components/Lightbox.astro';
 import { link } from '../../lib/link';
+import { fileMeta } from '../../lib/files';
 
 export async function getStaticPaths() {
   const posts = await getCollection('projects');
@@ -11,7 +13,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, date, tags, status, cover, summary } = entry.data;
+const { title, date, tags, status, cover, summary, downloads } = entry.data;
 const d = date.toISOString().slice(0, 10);
 ---
 <BaseLayout title={`${title} — xile.us`} description={summary}>
@@ -34,5 +36,29 @@ const d = date.toISOString().slice(0, 10);
     <div class="post mt-8">
       <Content />
     </div>
+
+    {downloads.length > 0 && (
+      <section class="mt-12">
+        <h2 class="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">// files</h2>
+        <div class="mt-4 card divide-y divide-[var(--border)]">
+          {downloads.map((dl) => {
+            const { ext, size } = fileMeta(dl.file);
+            return (
+              <a href={link(dl.file)} download class="flex items-center justify-between gap-4 p-4 hover:bg-[var(--panel-soft)] transition-colors">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="chip" style="width:34px;height:34px"><span class="text-xs">◆</span></span>
+                  <span class="truncate">{dl.label}</span>
+                </div>
+                <div class="flex items-center gap-3 mono text-xs text-[var(--muted)] flex-none">
+                  <span>{ext}</span>{size && <span>{size}</span>}
+                  <span class="badge">Download</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
   </article>
+  <Lightbox />
 </BaseLayout>
