@@ -170,6 +170,10 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
   existing sites so xile.us reuses them exactly.
 - Decide authoring workflow (§7, choice 3).
 
+> **Live preview:** the site is deployed to GoDaddy and viewable at
+> **https://www.xile.us/preview/** (auto-redeploys on push to the dev branch via the
+> `deploy` workflow + your FTP secrets).
+
 ### Phase 1 — Scaffold + design system + deploy
 - Initialize **Astro + Tailwind** (or Next.js static-export); commit to this repo.
 - Port the **DEAD token layer + theme switcher + ◆ mark**; build base components
@@ -183,8 +187,9 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
   1 draft, 2013–2017**, converted to Markdown in `src/content/projects/` with code
   blocks, tags, dates, and redirects. See **MIGRATION.md**.
 - ✅ Built the project detail page (`/projects/[slug]`) with prose styles + status badge.
-- ⏳ **Pending:** the 50 media binaries (`wp-content/uploads`) aren't in the SQL —
-  add them under `public/legacy-uploads/` to light up images + file downloads.
+- ✅ Pulled the legacy media (148 files incl. all WP thumbnail sizes) from GoDaddy via
+  the `fetch-legacy-uploads` CI workflow → `public/legacy-uploads/`; post photos and
+  file downloads now render.
 
 ### Phase 3 — Galleries + downloads
 - Responsive, optimized **photo gallery + lightbox** (`next/image`).
