@@ -1,10 +1,12 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
 
 /* =========================================================================
-   DEAD design tokens — ported from the family sites (justinpoole.com,
-   jpmk12.net). Base = slate-950 + emerald accent. The accent is a CSS var
-   so the `data-theme` switcher can swap palettes (nightwatch/amber/arctic/
-   mission) exactly like the family's "app-theme" system.
+   DEAD design tokens — values lifted from the live family CSS
+   (justinpoole.com). Inter type, slate-950 + emerald base, and the four
+   real themes: nightwatch (default), amber, arctic, and the LIGHT "mission"
+   theme. Everything in the UI references these vars, so a data-theme swap
+   repaints the whole site.
    ========================================================================= */
 :root,
 [data-theme="nightwatch"] {
@@ -19,13 +21,36 @@
   --accent: #10b981;      /* emerald-500 */
   --accent-bright: #34d399; /* emerald-400 */
   --on-accent: #020617;
+  --code-bg: #060b16;
+  color-scheme: dark;
 }
-[data-theme="amber"]  { --accent: #f59e0b; --accent-bright: #fbbf24; --on-accent: #1a1205; }
-[data-theme="arctic"] { --accent: #38bdf8; --accent-bright: #7dd3fc; --on-accent: #04121b; }
-[data-theme="mission"]{ --accent: #ef4444; --accent-bright: #f87171; --on-accent: #1a0606; }
+[data-theme="amber"] {
+  --bg: #0c0800; --panel: #0c0800; --panel-soft: #160f00;
+  --border: #2e2100; --border-soft: #221800;
+  --text: #fef3c7; --muted: #b4791a; --faint: #6b3300;
+  --accent: #f59e0b; --accent-bright: #fbbf24; --on-accent: #1a1205;
+  --code-bg: #160f00; color-scheme: dark;
+}
+[data-theme="arctic"] {
+  --bg: #03091a; --panel: #050d20; --panel-soft: #07112a;
+  --border: #162b52; --border-soft: #0e1e3d;
+  --text: #dbeafe; --muted: #6f97bc; --faint: #2d4a65;
+  --accent: #0ea5e9; --accent-bright: #38bdf8; --on-accent: #04121b;
+  --code-bg: #07112a; color-scheme: dark;
+}
+[data-theme="mission"] { /* light theme */
+  --bg: #f5f4f0; --panel: #ffffff; --panel-soft: #faf9f6;
+  --border: #d3d1c7; --border-soft: #e3e2dc;
+  --text: #1a1a19; --muted: #6f6e68; --faint: #b0afa6;
+  --accent: #185fa5; --accent-bright: #378add; --on-accent: #ffffff;
+  --code-bg: #f1efe8; color-scheme: light;
+}
 
-html { color-scheme: dark; background: var(--bg); }
-body { background: var(--bg); color: var(--text); }
+html { background: var(--bg); }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
+}
 
 /* accent-aware helpers (Tailwind handles layout; these handle theme color) */
 .text-accent { color: var(--accent-bright); }
@@ -123,7 +148,7 @@ body { background: var(--bg); color: var(--text); }
   padding: .1rem .35rem; border-radius: .25rem;
 }
 .post pre {
-  background: #060b16; border: 1px solid var(--border); border-radius: .6rem;
+  background: var(--code-bg); border: 1px solid var(--border); border-radius: .6rem;
   padding: 1rem 1.1rem; overflow-x: auto; font-size: .85rem; line-height: 1.5;
 }
 .post pre code { background: none; border: 0; padding: 0; }

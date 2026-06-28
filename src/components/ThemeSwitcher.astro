@@ -15,10 +15,10 @@ const themes = ['nightwatch', 'amber', 'arctic', 'mission'];
 </div>
 
 <style>
-  .swatch[data-t="nightwatch"] { background: #10b981; }
-  .swatch[data-t="amber"]      { background: #f59e0b; }
+  .swatch[data-t="nightwatch"] { background: #34d399; }
+  .swatch[data-t="amber"]      { background: #fbbf24; }
   .swatch[data-t="arctic"]     { background: #38bdf8; }
-  .swatch[data-t="mission"]    { background: #ef4444; }
+  .swatch[data-t="mission"]    { background: #f5f4f0; } /* light theme */
 </style>
 
 <script is:inline>
@@ -36,6 +36,9 @@ const themes = ['nightwatch', 'amber', 'arctic', 'mission'];
     function set(t) {
       root.setAttribute('data-theme', t);
       try { localStorage.setItem(KEY, t); } catch (e) {}
+      var bg = getComputedStyle(root).getPropertyValue('--bg').trim();
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m && bg) m.setAttribute('content', bg);
       paint();
     }
     document.querySelectorAll('[data-theme-btn]').forEach(function (b) {
