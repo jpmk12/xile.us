@@ -1,11 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { link } from '../lib/link';
 
-// Placeholder shape for the Phase 3 downloads library.
-const sample = [
-  { label: 'Skull v2 — wiring diagram', type: 'PDF', size: '1.2 MB' },
-  { label: 'Skull v2 — jaw assembly', type: 'STL', size: '4.8 MB' },
-  { label: 'Fog controller — firmware', type: 'ZIP', size: '320 KB' },
+// Real downloadable files migrated from the legacy xile.us (Arduino code
+// backups for the remote-control robot). The full library + per-project
+// download cards expand in Phase 3.
+const files = [
+  {
+    label: 'Remote Control — Arduino sketch backup',
+    href: '/legacy-uploads/2013/07/Remote-Control-Backup.txt',
+    type: 'TXT',
+    project: 'the-journey-to-building-remote-controls',
+  },
+  {
+    label: 'Remote Robot — Arduino sketch',
+    href: '/legacy-uploads/2013/07/Remote-Robot.txt',
+    type: 'TXT',
+    project: 'arduino-powered-remote-control-robot',
+  },
 ];
 ---
 <BaseLayout title="Files — xile.us">
@@ -13,23 +25,28 @@ const sample = [
     <p class="mono text-xs text-accent tracking-widest uppercase">// downloads</p>
     <h1 class="mt-3 text-4xl font-black tracking-tight uppercase">File library</h1>
     <p class="mt-3 max-w-xl text-[var(--muted)]">
-      One place for every diagram, BOM, firmware build, and 3D file. The full library
-      lands in Phase 3 — here's the download-card style it will use.
+      Diagrams, BOMs, firmware, and 3D files in one place. Searchable filtering and
+      per-project grouping arrive in Phase 3.
     </p>
 
     <div class="mt-8 divide-y divide-[var(--border)] card">
-      {sample.map((f) => (
-        <div class="flex items-center justify-between gap-4 p-4">
+      {files.map((f) => (
+        <a href={link(f.href)} download class="flex items-center justify-between gap-4 p-4 hover:bg-[var(--panel-soft)] transition-colors">
           <div class="flex items-center gap-3 min-w-0">
             <span class="chip" style="width:36px;height:36px"><span class="text-xs">◆</span></span>
             <span class="truncate">{f.label}</span>
           </div>
           <div class="flex items-center gap-3 mono text-xs text-[var(--muted)] flex-none">
-            <span>{f.type}</span><span>{f.size}</span>
+            <span>{f.type}</span>
             <span class="badge">Download</span>
           </div>
-        </div>
+        </a>
       ))}
     </div>
+
+    <p class="mt-4 mono text-xs text-[var(--faint)]">
+      Files resolve once the legacy <code>wp-content/uploads</code> assets are added under
+      <code>public/legacy-uploads/</code> — see MIGRATION.md.
+    </p>
   </section>
 </BaseLayout>

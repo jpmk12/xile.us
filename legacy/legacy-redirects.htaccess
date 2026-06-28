@@ -1,0 +1,12 @@
+# Legacy xile.us WordPress URL redirects -> new project pages
+Redirect 301 /introducing-the-journey-series/ /projects/introducing-the-journey-series/
+Redirect 301 /hello-world-2/ /projects/hello-world-2/
+Redirect 301 /arduino-powered-remote-control-robot/ /projects/arduino-powered-remote-control-robot/
+Redirect 301 /my-first-large-project-and-a-look-ahead/ /projects/my-first-large-project-and-a-look-ahead/
+Redirect 301 /the-journey-to-building-remote-controls/ /projects/the-journey-to-building-remote-controls/
+Redirect 301 /learning-to-build-with-balsa-foam/ /projects/learning-to-build-with-balsa-foam/
+Redirect 301 /building-a-quadcopter/ /projects/building-a-quadcopter/
+Redirect 301 /python-cheat-sheet-working-lists/ /projects/python-cheat-sheet-working-lists/
+Redirect 301 /python-cheat-sheets-uncommon-methods/ /projects/python-cheat-sheets-uncommon-methods/
+Redirect 301 /image-magic-python-powered-digital-photo-frame/ /projects/image-magic-python-powered-digital-photo-frame/
+Redirect 301 /python-image-rotation-correction-script-exfs-data-editing/ /projects/python-image-rotation-correction-script-exfs-data-editing/

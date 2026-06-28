@@ -1,11 +1,14 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Button from '../components/Button.astro';
-import { projects } from '../data/projects';
 import { link } from '../lib/link';
 
-const latest = projects.slice(0, 6);
+const all = (await getCollection('projects'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => +b.data.date - +a.data.date);
+const latest = all.slice(0, 6);
 const categories = ['code', 'robotics', '3d-printing', 'halloween'];
 ---
 <BaseLayout>
@@ -37,7 +40,7 @@ const categories = ['code', 'robotics', '3d-printing', 'halloween'];
       <a href={link('/projects')} class="text-xs uppercase tracking-widest text-accent">All →</a>
     </div>
     <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {latest.map((p) => <ProjectCard project={p} />)}
+      {latest.map((p) => <ProjectCard entry={p} />)}
     </div>
   </section>
 </BaseLayout>

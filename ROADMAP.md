@@ -177,10 +177,14 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
 - Stand up **GitHub Actions → SFTP** to a **staging subfolder** (e.g.
   `public_html/preview`) so we verify on the real host before touching the live root.
 
-### Phase 2 — Content model + first posts
-- Define the `projects` MDX collection + typed frontmatter (schema in §4).
-- Author/migrate **3–5 real projects** across categories to pressure-test the layout.
-- Build the project detail page: write-up, metadata, status badge.
+### Phase 2 — Content model + first posts  ✅ (text done; media pending)
+- ✅ Defined the `projects` content collection + typed frontmatter (`src/content.config.ts`).
+- ✅ Migrated the real xile.us WordPress content (db `xilehost_wp2`): **10 posts +
+  1 draft, 2013–2017**, converted to Markdown in `src/content/projects/` with code
+  blocks, tags, dates, and redirects. See **MIGRATION.md**.
+- ✅ Built the project detail page (`/projects/[slug]`) with prose styles + status badge.
+- ⏳ **Pending:** the 50 media binaries (`wp-content/uploads`) aren't in the SQL —
+  add them under `public/legacy-uploads/` to light up images + file downloads.
 
 ### Phase 3 — Galleries + downloads
 - Responsive, optimized **photo gallery + lightbox** (`next/image`).
