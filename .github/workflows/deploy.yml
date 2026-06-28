@@ -13,7 +13,9 @@ name: Build & deploy (preview)
 
 on:
   push:
-    branches: [main]
+    # `main` is the eventual production trigger; the dev branch is included so
+    # we can verify the preview deploy before a default-branch/main exists.
+    branches: [main, claude/clever-shannon-5yw1f7]
   workflow_dispatch:
 
 permissions:

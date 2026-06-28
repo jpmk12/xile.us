@@ -1,0 +1,63 @@
+name: Fetch legacy uploads from GoDaddy
+
+# One-shot helper: mirror the old WordPress `wp-content/uploads` folder down
+# from GoDaddy (using the existing FTP secrets) and commit it into
+# public/legacy-uploads/, lighting up the migrated post photos + file
+# downloads. Runs when this file is pushed, or manually via workflow_dispatch
+# (available once the workflow is on the default branch).
+#
+# REMOTE_PATH is relative to the FTP account's home directory. The `deploy`
+# FTP account is rooted at public_html, so the old WP uploads are at
+# `wp-content/uploads`. If your old WordPress lives elsewhere, change it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      remote_path:
+        description: 'Path to wp-content/uploads (relative to the FTP home)'
+        default: 'wp-content/uploads'
+        required: true
+  push:
+    paths:
+      - '.github/workflows/fetch-legacy-uploads.yml'
+
+permissions:
+  contents: write
+
+env:
+  REMOTE_PATH_DEFAULT: 'wp-content/uploads'
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Mirror uploads down via FTPS
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          RP: ${{ github.event.inputs.remote_path || env.REMOTE_PATH_DEFAULT }}
+        run: |
+          mkdir -p public/legacy-uploads
+          echo "Mirroring '$RP' -> public/legacy-uploads"
+          lftp -c "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
+                   open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; \
+                   mirror --verbose --only-newer --no-perms \"$RP\" public/legacy-uploads; bye"
+          echo "Files downloaded: $(find public/legacy-uploads -type f | wc -l)"
+
+      - name: Commit fetched assets
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add public/legacy-uploads
+          if git diff --cached --quiet; then
+            echo "No new files to commit (check REMOTE_PATH if you expected files)."
+          else
+            git commit -m "Add legacy wp-content/uploads media fetched from GoDaddy"
+            git push
+          fi
