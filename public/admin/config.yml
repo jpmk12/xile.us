@@ -1,0 +1,49 @@
+# Sveltia CMS configuration — the visual editor at /admin.
+# Writes the SAME Markdown files as the repo, so hand-editing stays available.
+
+backend:
+  name: github
+  repo: jpmk12/xile.us
+  branch: main
+  # OAuth: GoDaddy is static, so the GitHub login handshake runs on a tiny free
+  # broker. Deploy `sveltia-cms-auth` (Cloudflare Workers) and set this to its
+  # URL — see ADMIN.md. Until then, Sveltia also accepts a Personal Access Token.
+  base_url: https://AUTH-WORKER-URL.workers.dev
+
+# New images uploaded in the editor are committed here and referenced by URL.
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+# A "project" is a blog post: write-up + photos + tags + downloads.
+collections:
+  - name: projects
+    label: Projects
+    label_singular: Project
+    folder: "src/content/projects"
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: yaml-frontmatter
+    summary: "{{title}}  —  {{date}}"
+    sortable_fields: [date, title]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: date, label: Date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, picker_utc: true }
+      - { name: tags, label: Tags, widget: list, default: [], required: false }
+      - name: status
+        label: Status
+        widget: select
+        options: [complete, in-progress]
+        default: complete
+      - { name: summary, label: Summary, widget: text, required: false }
+      - { name: cover, label: Cover image, widget: image, required: false }
+      - { name: draft, label: Draft, widget: boolean, default: false, required: false }
+      - name: downloads
+        label: Downloads
+        widget: list
+        required: false
+        label_singular: File
+        fields:
+          - { name: label, label: Label, widget: string }
+          - { name: file, label: File, widget: file }
+      - { name: body, label: Write-up, widget: markdown }
