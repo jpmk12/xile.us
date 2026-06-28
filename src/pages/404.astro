@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { link } from '../lib/link';
+---
+<BaseLayout title="404 — xile.us" description="Page not found.">
+  <section class="max-w-3xl mx-auto px-5 py-32 text-center grid-lines">
+    <p class="mono text-sm font-bold uppercase tracking-widest text-accent">404</p>
+    <h1 class="mt-4 text-4xl sm:text-5xl font-black tracking-tight uppercase glitch">Signal lost</h1>
+    <p class="mt-4 text-[var(--muted)]">
+      That page doesn't exist or has moved. Head back to the workshop.
+    </p>
+    <div class="mt-8 flex justify-center gap-3">
+      <Button href={link('/')}>Home</Button>
+      <Button href={link('/projects')} variant="ghost">Browse projects</Button>
+    </div>
+  </section>
+</BaseLayout>

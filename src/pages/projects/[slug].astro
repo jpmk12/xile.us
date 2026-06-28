@@ -16,8 +16,8 @@ const { Content } = await render(entry);
 const { title, date, tags, status, cover, summary, downloads } = entry.data;
 const d = date.toISOString().slice(0, 10);
 ---
-<BaseLayout title={`${title} — xile.us`} description={summary}>
-  <article class="max-w-3xl mx-auto px-5 py-16">
+<BaseLayout title={`${title} — xile.us`} description={summary} ogImage={cover ?? '/og-default.png'}>
+  <article class="max-w-3xl mx-auto px-5 py-16" data-pagefind-body>
     <a href={link('/projects')} class="mono text-xs text-accent">← all projects</a>
 
     <div class="mt-5 mono text-xs text-[var(--muted)] flex items-center gap-3">

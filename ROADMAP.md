@@ -203,10 +203,18 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
 - Wire **Sveltia CMS** at `/admin` with GitHub OAuth; configure post/image/download
   fields so you can publish from a laptop **or phone**. Document the "new post" flow.
 
-### Phase 5 — Polish
-- Glitch/scanline interactions and hover states (reduced-motion safe).
-- RSS feed, SEO/Open Graph cards, sitemap, favicon set, 404 page.
-- Performance pass (Lighthouse) + image budgets.
+### Phase 4.5 — Client-side search  ✅
+- ✅ **Pagefind** search at `/search` (nav-linked), indexed post-build (`pagefind
+  --site dist`), themed to DEAD; posts indexed via `data-pagefind-body`.
+
+### Phase 5 — Polish  ✅ (formal Lighthouse audit still optional)
+- ✅ **RSS** (`/rss.xml`), **sitemap** (`@astrojs/sitemap`), **favicon set** (svg +
+  16/32 png + apple-touch), **Open Graph / Twitter cards** (default `og-default.png`;
+  per-post uses the cover) + canonical URLs.
+- ✅ **404 page** ("Signal lost") in the DEAD style; glitch hover + reduced-motion
+  guards carried through from Phase 1.
+- ◻ Optional later: formal Lighthouse pass / scanline toggle (already static +
+  near-zero-JS, Inter subset, lazy images).
 
 ### Phase 6 — Launch / cutover
 - Back up the current `public_html`, then **swap the live root** from the preview

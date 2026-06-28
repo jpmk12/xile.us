@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { link } from '../lib/link';
+// Pagefind indexes the built site after `astro build` (see the build script).
+// Its assets live at /pagefind/ and are generated at build time, so search is
+// live on the deployed/preview site (not in `astro dev`).
+---
+<BaseLayout title="Search — xile.us" description="Search the xile.us project archive.">
+  <section class="max-w-3xl mx-auto px-5 py-16">
+    <p class="mono text-xs text-accent tracking-widest uppercase">// search</p>
+    <h1 class="mt-3 text-4xl font-black tracking-tight uppercase">Search</h1>
+    <p class="mt-3 text-[var(--muted)]">Find any project by title, content, or tag.</p>
+    <div
+      id="search"
+      class="mt-6"
+      data-base={link('/pagefind/')}
+      data-bundle={link('/pagefind/pagefind-ui.js')}
+    ></div>
+  </section>
+</BaseLayout>
+
+<link rel="stylesheet" href={link('/pagefind/pagefind-ui.css')} />
+
+<style is:global>
+  #search {
+    --pagefind-ui-primary: var(--accent-bright);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--panel-soft);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--panel);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-font: 'Inter Variable', Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+  #search .pagefind-ui__result-link { color: var(--accent-bright); }
+  #search .pagefind-ui__result-excerpt { color: var(--muted); }
+</style>
+
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', function () {
+    var el = document.getElementById('search');
+    if (!el) return;
+    var s = document.createElement('script');
+    s.src = el.dataset.bundle;
+    s.onload = function () {
+      // eslint-disable-next-line no-undef
+      new PagefindUI({ element: '#search', bundlePath: el.dataset.base, showImages: false, showSubResults: true });
+    };
+    document.head.appendChild(s);
+  });
+</script>

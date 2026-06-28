@@ -4,11 +4,15 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { link } from '../lib/link';
 
-interface Props { title?: string; description?: string; }
+interface Props { title?: string; description?: string; ogImage?: string; }
 const {
   title = 'xile.us — makerspace build logs',
   description = 'A living portfolio of makerspace projects — code, robotics, 3D printing, and Halloween — with photos and downloadable files.',
+  ogImage = '/og-default.png',
 } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL(link(ogImage), Astro.site);
 ---
 <!doctype html>
 <html lang="en" data-theme="nightwatch">
@@ -17,7 +21,29 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#020617" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- icons -->
     <link rel="icon" href={link('/icon.svg')} type="image/svg+xml" />
+    <link rel="icon" type="image/png" sizes="32x32" href={link('/favicon-32.png')} />
+    <link rel="icon" type="image/png" sizes="16x16" href={link('/favicon-16.png')} />
+    <link rel="apple-touch-icon" href={link('/apple-touch-icon.png')} />
+
+    <!-- social cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="xile.us" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- feed -->
+    <link rel="alternate" type="application/rss+xml" title="xile.us" href={link('/rss.xml')} />
+
     <title>{title}</title>
     <!-- apply saved theme before paint to avoid a flash -->
     <script is:inline>
