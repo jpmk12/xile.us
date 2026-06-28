@@ -1,0 +1,92 @@
+name: Cutover — deploy to live root (additive)
+
+# Goes live by uploading the static site INTO the xile.us docroot (the FTP
+# home dir), ADDITIVELY. It uses `lftp mirror -R` WITHOUT `--delete`, so it
+# only adds/overwrites this site's own files — it NEVER removes anything,
+# leaving the old WordPress AND every sibling subsite folder
+# (sickfun.org/, runwithreason.com/, passapft.com/, terrys-barbershop.com/,
+# vhg305.com/, etc.) completely untouched.
+#
+# Rollback: the previous live `.htaccess` is saved as a build artifact and
+# also copied to `.htaccess.pre-xile` on the server. Restore it (and the old
+# DirectoryIndex precedence) to instantly fall back to WordPress.
+#
+# Trigger: push to `main`, or manually via "Run workflow".
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cutover
+  cancel-in-progress: false
+
+jobs:
+  cutover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build (production, root base)
+        run: npm run build
+
+      - name: Write production .htaccess (index + 301 redirects + 404)
+        run: |
+          {
+            echo '# xile.us static site — generated at cutover'
+            echo 'DirectoryIndex index.html index.php'
+            echo 'Options -Indexes'
+            echo 'ErrorDocument 404 /404.html'
+            echo ''
+            cat legacy/legacy-redirects.htaccess
+          } > dist/.htaccess
+          echo "---- dist/.htaccess ----"; cat dist/.htaccess
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Back up live .htaccess (artifact + server copy)
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          mkdir -p backup
+          lftp -c "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
+                   set net:timeout 20; set net:max-retries 2; set cmd:fail-exit no; \
+                   open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; \
+                   get .htaccess -o backup/htaccess.live-backup; \
+                   put backup/htaccess.live-backup -o .htaccess.pre-xile; \
+                   bye" || echo 'No existing .htaccess to back up.'
+
+      - name: Upload site ADDITIVELY (no deletions)
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          lftp -c "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
+                   set net:timeout 20; set net:max-retries 2; set cmd:fail-exit no; \
+                   set mirror:parallel-transfer-count 3; \
+                   open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; \
+                   mirror -R --no-perms --no-symlinks --verbose dist/ ./; \
+                   bye"
+          echo 'Additive upload complete (no files were deleted).'
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-htaccess-backup
+          path: backup/
+          if-no-files-found: ignore

@@ -7,15 +7,13 @@ name: Build & deploy (preview)
 #   FTP_USERNAME  — e.g. deploy@xile.us
 #   FTP_PASSWORD  — the FTP account password
 #
-# Going live (later): change `server-dir` to `public_html/` and remove the
-# SITE_BASE env so the build targets the root, OR map a `preview.xile.us`
-# subdomain to public_html/preview for a clean staging URL.
+# The FTP account is rooted at the xile.us docroot (home dir), so the preview
+# lives at `preview/` -> https://www.xile.us/preview/. Production cutover is a
+# separate, additive workflow (cutover.yml).
 
 on:
   push:
-    # `main` is the eventual production trigger; the dev branch is included so
-    # we can verify the preview deploy before a default-branch/main exists.
-    branches: [main, claude/clever-shannon-5yw1f7]
+    branches: [claude/clever-shannon-5yw1f7]
   workflow_dispatch:
 
 permissions:
@@ -52,4 +50,6 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./dist/
-          server-dir: public_html/preview/
+          # dedicated preview subfolder — this action only ever syncs INSIDE
+          # server-dir, so it never touches the docroot or sibling subsites.
+          server-dir: preview/
