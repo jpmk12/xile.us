@@ -1,0 +1,134 @@
+// Software by JPMK12
+// Designed for XILE
+// This program is for a 
+// Remote Control Robot Unit
+
+// Wiring: 
+// Control Knob: X and Y Analog Outs connected to Analog5 and Analog4 Respectively
+// Xbee RX and TX connected to D3 and D2 Respectively
+
+// Includes
+#include <Servo.h>
+#include <SoftwareSerial.h>
+
+// These variables are the Serials and the Strings Untilized by them
+SoftwareSerial mySerial =  SoftwareSerial(2, 3); // Controls the Xbee transmitter
+String lastSent = "stop"; // The variable set nd passed from Remote to Robot
+
+// Currently Unused - Sets a varible for passing later
+int forward = 0;
+int backward = 0;
+int left = 0;
+int right = 0;
+
+// Inputs read in from Analog Control Knob
+int xJoy = A5;    // Select the input pin for the X Axis
+int xValue = 0;   // Variable to store the value coming from the X Axis 
+int yJoy = A4;    // select the input pin for the Y Axis
+int yValue = 0;   // Variable to store the value coming from the sensor
+////////////////////////////////////////int ledPin = 13;  // Used only for Testing
+
+// Setup runs at boot to configure the remote
+void setup() 
+{  
+    Serial.begin(9600); // This serial is for debugging on a Terminal  
+    //Serial.println("Terminal Serial Initialized");
+    mySerial.begin(9600); // This is the Serial for the Xbee Transmitter
+    //mySerial.println("Xbee Terminal Initialized");
+}
+
+// This loop runs continuously Reading the Control Knob Output and Sending Control Signals
+// through the Xbee Remote
+void loop()
+{
+  //Read the X and Y Values from the Control Knob
+  xValue = analogRead(xJoy); 
+  yValue = analogRead(yJoy); 
+  
+  
+  //Determines when the knob is in the center / (Stop) position
+  while(((xValue < 500) && (xValue >400) && (yValue > 500) && (yValue < 520)))
+  {
+       //Read the X and Y
+       xValue = analogRead(xJoy); 
+       yValue = analogRead(yJoy); 
+       // This prevents a flood of STOP messages by only sending it once
+       // It will always be stop the first time
+       if(lastSent != "stop") 
+       {
+         mySerial.println("stop") ;
+         Serial.println("Stop");
+         lastSent = "stop";
+       }
+  }// End of the Stop Position Checker
+  
+  // Test for a forward signal
+  if(xValue > 500)
+  {
+    //forward = 1; 
+    //This prevents the send flood of Forward Messages
+    if(lastSent != "forward")
+    {
+      Serial.println("Going Forward");
+      mySerial.println("Forward");
+    }
+    lastSent = "forward";
+  }
+  else { forward = 0; }
+  
+  
+  // Test for a Reverse Signal
+  if(xValue < 400)
+  {
+    backward = 1; 
+    //This prevents the send flood of Reverse Messages
+    if(lastSent != "backward")
+    {
+      Serial.println("Going Backward");
+      mySerial.println("Backward");
+    }
+    lastSent = "backward";
+  }
+  else { backward = 0; }
+  
+  
+  //Begin the Left Turn Portion
+  if(yValue > 520)
+  {
+    left = 1; 
+    //This prevents the send flood of Left Messages
+    if(lastSent != "left")
+    {
+      Serial.println("Going Left");
+      mySerial.println("Left");
+    }
+    lastSent = "left";
+  }
+  else { left = 0; }
+  
+  
+  //Begin the Right Turn Reader
+  if(yValue < 500)
+  {
+    right = 1; 
+    //This prevents the send flood of Right Messages
+    if(lastSent != "right")
+    {
+      Serial.println("Going Right");
+      mySerial.println("Right");
+    }
+    lastSent = "right";
+  }
+  else { right = 0; }
+
+  /* These Lines are all for configuring the potetiometers 
+     Use the prints to determine your boundaries for the turns
+  Serial.print("xJoy ");
+  Serial.println(xValue);
+  Serial.print("yJoy ");
+  Serial.println(yValue);
+  Serial.print("Initial ");
+  Serial.println(int1);
+  */
+  
+}// End of the Program

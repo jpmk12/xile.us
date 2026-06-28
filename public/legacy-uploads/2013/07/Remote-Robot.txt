@@ -1,0 +1,149 @@
+// Software by JPMK12
+// Designed for XILE
+// This program is for a 
+// Remote Control Robot
+// Wiring: 
+// Left Side of Servos - Pin 4
+// Right Side of Servos - Pin 8
+// Pins 2 and 3 are connected to TX and RX respectively
+
+
+//Includes
+#include <Servo.h> 
+#include <SoftwareSerial.h>
+#include<string.h>
+
+//This sectin are the strings received/transmitted
+String content = "stop"; //The variable holding the transmitted Xbee data
+char character; // No longer used
+String dir = "";  // No longer used
+
+//The Serial that receives transmitted Xbee signals  
+SoftwareSerial mySerial =  SoftwareSerial(2, 3);
+
+//Motor Control Variables 
+Servo right;  // create servo object to control a servo 
+Servo left;                // a maximum of eight servo objects can be created 
+int pos;    // variable to store the servo position 
+int speed = 100; // The speed used by the motors
+
+//The setup function runs once and initializes all the variables for the program
+void setup() 
+{ 
+  left.attach(4);  // attaches the servo on pin 4 to the left side servos 
+  right.attach(8);  // attaches the servo on pin 8 to the right side servos
+  mySerial.begin(9600); // The serial that receives the Xbee signals
+  Serial.begin(9600); // The Xbee utilized for debugging
+
+} 
+ 
+//This loop runs continuously listening for transmitted motion commands 
+void loop() 
+{ 
+
+  // This while loop waits for a transmition from the Xbee to be received
+  // Each charecter is read in and added to the existing string reconstructing
+  // the word. It is then trimmed and passed to the conditionals.
+  while(mySerial.available()) 
+  {
+      character = mySerial.read();
+      content.concat(character);
+  }
+
+  // If the string received is not empty, trim the blank space and print the result
+  if (content != "") {
+    content.trim();
+    Serial.println(content);
+    //Serial.print(""); // Debug
+    //if(content == "stop") { mySerial.flush(); } // Debug
+  }
+
+
+  // Stop Function
+  if(content == "stop")
+   { 
+     goStop();   
+      Serial.println("Stop was called");  //Debug
+     content = "";   
+   }
+  
+    // Forward Check  
+   if(content == "Forward")
+   { 
+     goForward();   
+      //Serial.println("Got Forward");   //Debug  
+   }
+  
+   // reverse Check
+   if(content == "Backward")
+   { 
+     goBackward();   
+      //Serial.println("Got Backward");    //Debug 
+   }
+   
+   //Left Turn Check
+   if(content == "Left")
+   { 
+     goLeft();   
+      //Serial.println("Got Left");     
+   }
+   
+   //Right Turn Check
+   if(content == "Right")
+   { 
+     goRight();   
+      //Serial.println("Got Right");     //Debug
+   }
+
+   content = ""; // Clear Content at the end to listen for a new transmission
+
+} //end void loop
+
+
+/********************************
+The set of functions below are
+simple write to the servos to
+cause motion based on which 
+function is called.
+*********************************/
+
+
+
+// Stop Function / Write a 90 to Stop the robot
+// This is the first function you want to use
+// to ensure your robot doesnt move without input.
+// You may have to adjust the screws on the side of
+// your servo to make them actually stop.
+void goStop()
+{
+ left.write(90);
+ right.write(90);
+} 
+
+//Sends the robot forward
+void goForward()
+{
+  left.write(90 + speed);
+  right.write(90 - speed);
+}
+
+//Sends the robot in reverse
+void goBackward()
+{
+ left.write(90 - speed);
+ right.write(90 + speed);
+}
+  
+//Turns the robot to the left
+void goRight()
+{
+ left.write(90 + speed);
+ right.write(90 + speed);
+}
+
+//Turns the robot to the right
+void goLeft()
+{
+ left.write(90 - speed);
+ right.write(90 - speed);
+}
