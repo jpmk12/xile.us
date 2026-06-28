@@ -54,8 +54,11 @@ tracking, the ◆ mark, the multi-theme switcher) so xile.us visibly joins the f
   traces to an early-2000s **PostNuke** community — forums/tutorials/downloads. We
   migrate the portfolio/blog/file content; legacy forum software is not carried over.)
 
-**Still open:** authoring workflow (§7, choice 3) — Git/MDX vs. the Sveltia `/admin`
-visual editor.
+- **Authoring: both — Git/MDX *and* the Sveltia `/admin` visual editor.** They aren't
+  alternatives: every post is a plain `.mdx` file, and Sveltia is a browser/phone UI
+  that writes those same files. So you can hand-edit MDX for power *or* snap-and-publish
+  from `/admin`. Start with **PAT auth** (site stays 100% on GoDaddy); MDX works from
+  Phase 2, the `/admin` layer lands in Phase 4.
 
 ### Migration plan (old → new)
 1. **Inventory** the current site: list every post, photo set, and downloadable file
@@ -211,21 +214,14 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
 
 1. ~~Hosting + migrate vs. fresh~~ → **decided: GoDaddy cPanel + migrate (§2).**
 2. ~~Stack~~ → **decided by hosting: static build (Astro recommended) → SFTP (§3).**
-3. **Authoring workflow** — the one decision left. Both produce identical MDX, so it's
-   not a one-way door:
-   - **A) Git / MDX only** — edit `.mdx` files + commit. Free, full power, but clunky
-     from a phone; a frontmatter typo can break the build.
-   - **B) Sveltia CMS at `/admin` (recommended)** — a browser/phone editor with forms +
-     drag-drop photo upload that commits MDX + images to GitHub (which triggers the
-     build). Works on static GoDaddy because writes go to GitHub, not the host. Auth
-     options, easiest first: **(1)** paste a fine-grained **PAT**, **(2)** a tiny free
-     **OAuth broker** on Cloudflare/Netlify for one-click "Sign in with GitHub," or
-     **(3)** Sveltia's hosted GitHub App. *Recommendation: ship B with PAT auth; the
-     site stays 100% on GoDaddy.*
+3. ~~Authoring workflow~~ → **decided: both — Git/MDX *and* Sveltia `/admin`** (the CMS
+   writes the same MDX files, so it's additive, not a fork). Start with **PAT auth**.
+   Remaining auth upgrade path, when wanted: a tiny free **OAuth broker** on
+   Cloudflare/Netlify for one-click "Sign in with GitHub," or Sveltia's hosted GitHub App.
 4. **Inputs for build time:** GoDaddy **SFTP credentials** (→ repo secrets), the
    **content export/FTP access** to migrate from, and the family's **theme tokens,
    font, and `icon.svg`**.
 
-> Suggested first move: pick **3A or 3B**, hand me SFTP creds + a content export, and
-> I'll scaffold Phase 1 (Astro + the ported DEAD theme + a working SFTP preview deploy)
-> so you can see xile.us live on GoDaddy in the family look.
+> Suggested first move: hand me SFTP creds + a content export, and I'll scaffold Phase 1
+> (Astro + the ported DEAD theme + a working SFTP preview deploy) so you can see xile.us
+> live on GoDaddy in the family look.
