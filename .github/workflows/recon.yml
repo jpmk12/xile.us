@@ -1,0 +1,37 @@
+name: Recon GoDaddy layout
+
+# Read-only: print the FTP working directory + listings so we set cutover
+# paths correctly. Safe — it only lists, never writes.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/recon.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  recon:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Inspect remote layout
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          lftp -c "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
+                   set net:timeout 20; set net:max-retries 2; set cmd:fail-exit no; \
+                   open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_SERVER\"; \
+                   echo '===== pwd ====='; pwd; \
+                   echo '===== ls HOME ====='; cls -l .; \
+                   echo '===== ls preview ====='; cls -l preview; \
+                   echo '===== ls public_html ====='; cls -l public_html; \
+                   echo '===== ls public_html/preview ====='; cls -l public_html/preview; \
+                   echo '===== key files at HOME ====='; cls -l index.php index.html .htaccess wp-config.php; \
+                   echo '===== wp-content dir? ====='; cls -d wp-content; \
+                   bye"
