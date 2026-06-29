@@ -5,10 +5,10 @@ backend:
   name: github
   repo: jpmk12/xile.us
   branch: main
-  # OAuth: GoDaddy is static, so the GitHub login handshake runs on a tiny free
-  # broker. Deploy `sveltia-cms-auth` (Cloudflare Workers) and set this to its
-  # URL — see ADMIN.md. Until then, Sveltia also accepts a Personal Access Token.
-  base_url: https://AUTH-WORKER-URL.workers.dev
+  # Auth: use the "Sign In with Token" button on the /admin login screen and
+  # paste a GitHub Personal Access Token (no OAuth app or broker required).
+  # To switch to one-click OAuth later, deploy sveltia-cms-auth and add
+  # `base_url: <your-worker-url>` here — see ADMIN.md.
 
 # New images uploaded in the editor are committed here and referenced by URL.
 media_folder: "public/uploads"
@@ -38,6 +38,7 @@ collections:
       - { name: summary, label: Summary, widget: text, required: false }
       - { name: cover, label: Cover image, widget: image, required: false }
       - { name: draft, label: Draft, widget: boolean, default: false, required: false }
+      - { name: legacyUrl, label: Legacy URL, widget: hidden, required: false }
       - name: downloads
         label: Downloads
         widget: list
