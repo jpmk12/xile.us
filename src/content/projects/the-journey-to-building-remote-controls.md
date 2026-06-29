@@ -14,7 +14,7 @@ downloads:
 ---
 <span style="line-height: 1.714285714; font-size: 1rem;">I recently finished a project that involves an Arduino powered remote control. I learned a lot of things along the way about setup and programming that I wanted to share to help others avoid pitfalls.</span>
 
-<a href="/legacy-uploads/2013/07/Remote-4.jpg"><img class="alignnone size-medium wp-image-15" alt="Xbee Remote 2" src="/legacy-uploads/2013/07/Remote-4-300x225.jpg" width="300" height="225" /></a>
+<a href="/legacy-uploads/2013/07/Remote-4.jpg"><img loading="lazy" decoding="async" class="alignnone size-medium wp-image-15" alt="Xbee Remote 2" src="/legacy-uploads/2013/07/Remote-4-300x225.jpg" width="300" height="225" /></a>
 <h1><span style="text-decoration: underline;">Hardware Issues</span></h1>
 The Adafruit Xbee breakout board supports directly transmitting analog inputs to a second Xbee receiver. This is great for simple projects, but I was looking for very strict control over the Remote and the Robot. I also had a dream of later using the stick to control an actuator mounted to the robot using the same stick that controls the movement of the robot. This would certainly require a micro-controller on both ends (Or so I thought).
 
@@ -52,7 +52,7 @@ content.trim();
 Serial.print(content);
 }</address>My last major problem was an issue in the way I was originally transmitting control instructions. I was just waiting for input and then transmitting the input over and over which caused a buffer overload on the receiving side. My code would send the Forward command over and over resulting in the backing up of the receiving buffer. When I then transmitted a stop command, it would often get lost in the flood off control commands.
 
-I remedied this situation by transmitting the control instruction only once and setting a "last sent" flag to check if the command was the same or not. This stopped the flood and only transmitted an instruction via Xbee when it was different that before. This technique can be viewed in the completed code for the<a href="/2013/07/09/arduino-powered-remote-control-robot/"> Arduino Powered Remote Control Robot project.</a>
+I remedied this situation by transmitting the control instruction only once and setting a "last sent" flag to check if the command was the same or not. This stopped the flood and only transmitted an instruction via Xbee when it was different that before. This technique can be viewed in the completed code for the<a href="/projects/arduino-powered-remote-control-robot/"> Arduino Powered Remote Control Robot project.</a>
 <h1>Summary</h1>
 Every project should come with a healthy bit of learning along the way. I learned much more about the hardware and how much of a difference a slight change in code implementation can make to address limitations in the hardware.
 

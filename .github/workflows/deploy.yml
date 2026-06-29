@@ -36,6 +36,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npm test
+
       - name: Build (preview base)
         run: npm run build
         env:

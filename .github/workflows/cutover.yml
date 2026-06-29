@@ -38,6 +38,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Test (gate — don't deploy broken content)
+        run: npm test
+
       - name: Build (production, root base)
         run: npm run build
 

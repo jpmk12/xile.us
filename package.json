@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
@@ -17,7 +18,9 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
+    "gray-matter": "^4.0.3",
     "pagefind": "^1.5.2",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^4.0.0",
+    "vitest": "^4.1.9"
   }
 }

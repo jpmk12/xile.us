@@ -51,7 +51,7 @@ print("<body>")
 for photo_path in display_list:
 #       print(photo_path[21:])  #Debug
         print("<div class=\"main\">")
-        print("<img src=\"" + "/image_magic/" + photo_path[21:] + "\" alt=\"\" />")
+        print("<img loading="lazy" decoding="async" src=\"" + "/image_magic/" + photo_path[21:] + "\" alt=\"\" />")
         print("</div>")
 
 #Optional Statement for printing the path of the current displayed photo
