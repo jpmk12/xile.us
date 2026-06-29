@@ -1,6 +1,8 @@
 ---
 title: "Introducing the Journey Series"
 date: 2013-07-05
+category: updates
+featured: false
 tags: ["journey", "news"]
 status: complete
 summary: "I have been searching for a good tag-line that would most appropriately tell the story of what I was hoping to do here. I feel that every project, whether\u2026"

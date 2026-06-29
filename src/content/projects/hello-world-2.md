@@ -1,6 +1,8 @@
 ---
 title: "New Site Upgrade"
 date: 2013-07-06
+category: updates
+featured: false
 tags: ["news"]
 status: complete
 summary: "I have been going through some upgrades to make it easier to posts about new projects so I decided to go with a web site that would faciliate sharing ideas\u2026"

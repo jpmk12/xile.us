@@ -1,6 +1,8 @@
 ---
 title: "Python Cheat Sheet - Working With Lists"
 date: 2017-01-19
+category: code
+featured: false
 tags: ["code", "coding", "programming", "python"]
 status: complete
 summary: "Working with Lists: A quick description of different operations that can be performed on a python list #Declare a list with 2 initial values computers =\u2026"

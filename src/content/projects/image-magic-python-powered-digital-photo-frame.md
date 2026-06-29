@@ -1,6 +1,8 @@
 ---
 title: "Image Magic: Python Powered Digital Photo Frame On Raspberry Pi"
 date: 2017-02-18
+category: code
+featured: false
 tags: ["code", "python", "programming", "raspberry-pi", "photo-slideshow", "digital-photo-frame"]
 status: complete
 summary: "I was looking for a quick way to scan every photo on my media server, and display them one at a time in a photo slideshow. I wanted a python program to\u2026"

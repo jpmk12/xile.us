@@ -1,6 +1,8 @@
 ---
 title: "Python Image Rotation Correction Script (EXFS Data Editing)"
 date: 2017-02-19
+category: code
+featured: false
 tags: ["portfolio", "code", "exfs", "python", "pexif", "pil", "digital-photo-frame", "programming", "image-rotation"]
 status: complete
 summary: "This script is written in python to perform EXFS corrections of digital photos. This script traverses the specified directory, stores all images, then\u2026"

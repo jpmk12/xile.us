@@ -1,6 +1,8 @@
 ---
 title: "Learning to Build with Balsa Foam"
 date: 2013-09-07
+category: 3d-printing
+featured: false
 tags: ["3d-printing", "portfolio", "balsa-foam", "balsa-foam-models", "carving", "electronic-crafts", "models"]
 status: complete
 summary: "I am learning how to build models that I can animate with an Arduino. After much exploration, I have decided on Balsa Foam. It is easy to shape, carve and\u2026"

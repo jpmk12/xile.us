@@ -1,6 +1,8 @@
 ---
 title: "Arduino Powered Remote Control Robot"
 date: 2013-07-09
+category: robotics
+featured: false
 tags: ["robotics", "portfolio", "arduino", "wireless-robot"]
 status: complete
 summary: "I have been working on a Arduino Powered Robot that could be remote controlled. (I will continue to update this with more detail). The video below shows the\u2026"

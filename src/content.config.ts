@@ -8,6 +8,10 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
+    category: z
+      .enum(['flying', 'robotics', '3d-printing', 'code', 'halloween', 'updates'])
+      .default('updates'),
+    featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     status: z.enum(['complete', 'in-progress']).default('complete'),
     summary: z.string().default(''),

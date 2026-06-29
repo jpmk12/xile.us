@@ -1,6 +1,8 @@
 ---
 title: "Python Cheat Sheets: Uncommon Methods"
 date: 2017-01-21
+category: code
+featured: false
 tags: ["news"]
 status: complete
 summary: "This is a quick list of uncommon methods in Python. #Set Method - Eliminates duplicates set(my_list)"

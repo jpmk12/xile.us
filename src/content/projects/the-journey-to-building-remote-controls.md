@@ -1,6 +1,8 @@
 ---
 title: "The Journey to Building Remote Controls"
 date: 2013-07-14
+category: robotics
+featured: false
 tags: ["journey", "robotics", "arduino", "remote-control", "xbee"]
 status: complete
 summary: "I recently finished a project that involves an Arduino powered remote control. I learned a lot of things along the way about setup and programming that I\u2026"

@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { link } from '../../lib/link';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('projects')).filter((p) => !p.data.draft);
+  const tags = Array.from(new Set(posts.flatMap((p) => p.data.tags)));
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((p) => p.data.tags.includes(tag))
+        .sort((a, b) => +b.data.date - +a.data.date),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+<BaseLayout title={`#${tag} — xile.us`} description={`Projects tagged ${tag}.`}>
+  <section class="max-w-6xl mx-auto px-5 py-16">
+    <a href={link('/projects')} class="mono text-xs text-accent">← all projects</a>
+    <p class="mt-4 mono text-xs text-[var(--muted)] tracking-widest uppercase">// tag</p>
+    <h1 class="mt-2 text-4xl font-black tracking-tight uppercase">#{tag}</h1>
+    <p class="mt-3 text-[var(--muted)]">{posts.length} project{posts.length === 1 ? '' : 's'}</p>
+    <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {posts.map((p) => <ProjectCard entry={p} />)}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,6 +1,8 @@
 ---
 title: "A Look Ahead"
 date: 2013-07-10
+category: updates
+featured: false
 tags: ["robotics", "news", "xile"]
 status: complete
 summary: "My first large project How-To has been published and I am already looking at my next project. I will continue to update the Arduino Powered Remote\u2026"

@@ -1,7 +1,9 @@
 ---
 title: "Building A Quadcopter"
 date: 2013-11-11
-tags: ["news"]
+category: flying
+featured: true
+tags: ["flying", "quadcopter", "multirotor", "rc", "arduino", "build-log"]
 status: complete
 summary: "I have been working on building a custom Quad Copter with parts ordered from Hobby King. Materials List: TURNIGY Plush 25amp Speed Controller (4) D2822/14\u2026"
 cover: "/legacy-uploads/2013/11/quad.jpg"

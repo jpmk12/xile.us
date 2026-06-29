@@ -29,6 +29,18 @@ collections:
     fields:
       - { name: title, label: Title, widget: string }
       - { name: date, label: Date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, picker_utc: true }
+      - name: category
+        label: Category
+        widget: select
+        default: flying
+        options:
+          - { label: Flying, value: flying }
+          - { label: Robotics, value: robotics }
+          - { label: 3D Printing, value: 3d-printing }
+          - { label: Code, value: code }
+          - { label: Halloween, value: halloween }
+          - { label: Updates, value: updates }
+      - { name: featured, label: Feature on home page, widget: boolean, default: false, required: false }
       - { name: tags, label: Tags, widget: list, default: [], required: false }
       - name: status
         label: Status
