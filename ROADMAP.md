@@ -216,11 +216,18 @@ I'll produce a one-page **style tile** in Phase 1 to lock the look before buildi
 - ◻ Optional later: formal Lighthouse pass / scanline toggle (already static +
   near-zero-JS, Inter subset, lazy images).
 
-### Phase 6 — Launch / cutover
-- Back up the current `public_html`, then **swap the live root** from the preview
-  subfolder to the new build; apply the **`.htaccess` 301 redirects** (§2) for old URLs.
-- Verify links + downloads against the migration checklist; keep the old-site backup.
-- Post-launch: analytics, broken-link sweep, mobile pass.
+### Phase 6 — Launch / cutover  ✅ LIVE
+- ✅ **Additive cutover** (`cutover.yml`, on push to `main`): builds at root base,
+  writes a production `.htaccess` (DirectoryIndex index.html, `Options -Indexes`,
+  legacy 301 redirects, 404), then `lftp mirror -R` **without `--delete`** into the
+  docroot — never removing WordPress or the sibling subsites (sickfun.org,
+  runwithreason.com, passapft.com, terrys-barbershop.com, vhg305.com).
+- ✅ **Rollback:** the prior live `.htaccess` is saved as a CI artifact
+  (`live-htaccess-backup`) and as `.htaccess.pre-xile` on the server. Restore it to
+  fall straight back to WordPress (old `index.php` was never deleted).
+- ◻ Post-launch (optional): analytics, broken-link sweep, mobile pass.
+- ⚠️ Note: additive deploys never delete, so a post *removed* via the CMS leaves its
+  old file on the server until manually cleared — fine for a portfolio.
 
 ### Later / nice-to-have
 - Client-side search (**Pagefind**) once there are enough posts.
