@@ -2,6 +2,7 @@
 title: "Python Cheat Sheet - Working With Lists"
 date: 2017-01-19
 category: code
+series: python-cheat-sheets
 featured: false
 tags: ["code", "coding", "programming", "python"]
 status: complete

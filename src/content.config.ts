@@ -21,6 +21,8 @@ const projects = defineCollection({
     downloads: z
       .array(z.object({ label: z.string(), file: z.string() }))
       .default([]),
+    series: z.string().optional(),
+    updates: z.array(z.object({ date: z.string(), note: z.string() })).default([]),
     specs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
     bom: z
       .array(z.object({ part: z.string(), qty: z.string().optional(), link: z.string().optional() }))

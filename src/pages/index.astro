@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Button from '../components/Button.astro';
 import Badge from '../components/Badge.astro';
+import Subscribe from '../components/Subscribe.astro';
 import { link } from '../lib/link';
 import { categories } from '../lib/categories';
 
@@ -70,4 +71,6 @@ const latest = all.filter((p) => p !== featured).slice(0, 6);
       {latest.map((p) => <ProjectCard entry={p} />)}
     </div>
   </section>
+
+  <Subscribe />
 </BaseLayout>

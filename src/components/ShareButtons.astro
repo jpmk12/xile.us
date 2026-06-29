@@ -1,0 +1,38 @@
+---
+interface Props { title: string; }
+const { title } = Astro.props;
+---
+<div class="mt-10 flex items-center gap-2 flex-wrap" data-share data-title={title}>
+  <span class="mono text-xs text-[var(--muted)] uppercase tracking-widest">// share</span>
+  <button type="button" data-copy class="badge mono hover:text-[var(--accent-bright)] hover:border-[var(--accent-bright)] transition-colors">Copy link</button>
+  <a data-x target="_blank" rel="noopener noreferrer" class="badge mono hover:text-[var(--accent-bright)] hover:border-[var(--accent-bright)] transition-colors">X</a>
+  <a data-reddit target="_blank" rel="noopener noreferrer" class="badge mono hover:text-[var(--accent-bright)] hover:border-[var(--accent-bright)] transition-colors">Reddit</a>
+  <button type="button" data-native hidden class="badge mono hover:text-[var(--accent-bright)] hover:border-[var(--accent-bright)] transition-colors">Share…</button>
+</div>
+
+<script is:inline>
+  (function () {
+    var root = document.querySelector('[data-share]');
+    if (!root) return;
+    var url = location.href;
+    var title = root.dataset.title || document.title;
+    var x = root.querySelector('[data-x]');
+    if (x) x.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(url);
+    var rd = root.querySelector('[data-reddit]');
+    if (rd) rd.href = 'https://www.reddit.com/submit?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title);
+    var copy = root.querySelector('[data-copy]');
+    if (copy && navigator.clipboard) {
+      copy.addEventListener('click', function () {
+        navigator.clipboard.writeText(url).then(function () {
+          var t = copy.textContent; copy.textContent = 'Copied ✓';
+          setTimeout(function () { copy.textContent = t; }, 1500);
+        });
+      });
+    }
+    var nat = root.querySelector('[data-native]');
+    if (nat && navigator.share) {
+      nat.hidden = false;
+      nat.addEventListener('click', function () { navigator.share({ title: title, url: url }); });
+    }
+  })();
+</script>

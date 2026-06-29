@@ -2,6 +2,7 @@
 title: "Python Cheat Sheets: Uncommon Methods"
 date: 2017-01-21
 category: code
+series: python-cheat-sheets
 featured: false
 tags: ["news"]
 status: complete

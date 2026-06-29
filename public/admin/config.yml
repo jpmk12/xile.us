@@ -41,7 +41,17 @@ collections:
           - { label: Halloween, value: halloween }
           - { label: Updates, value: updates }
       - { name: featured, label: Feature on home page, widget: boolean, default: false, required: false }
+      - { name: series, label: Series (build-log slug, e.g. fpv-build), widget: string, required: false }
       - { name: tags, label: Tags, widget: list, default: [], required: false }
+      - name: updates
+        label: Update log
+        widget: list
+        required: false
+        label_singular: Update
+        summary: "{{fields.date}} — {{fields.note}}"
+        fields:
+          - { name: date, label: Date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, picker_utc: true }
+          - { name: note, label: Note, widget: text }
       - name: status
         label: Status
         widget: select

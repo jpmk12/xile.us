@@ -7,6 +7,10 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import SpecCard from '../../components/SpecCard.astro';
 import Bom from '../../components/Bom.astro';
 import Model3D from '../../components/Model3D.astro';
+import SeriesNav from '../../components/SeriesNav.astro';
+import UpdateLog from '../../components/UpdateLog.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
+import Comments from '../../components/Comments.astro';
 import { link } from '../../lib/link';
 import { fileMeta } from '../../lib/files';
 import { getCategory } from '../../lib/categories';
@@ -18,9 +22,17 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, date, tags, status, cover, summary, downloads, category, specs, bom, models } = entry.data;
+const { title, date, tags, status, cover, summary, downloads, category, specs, bom, models, series, updates } = entry.data;
 const d = date.toISOString().slice(0, 10);
 const cat = getCategory(category);
+
+let seriesParts: { id: string; title: string }[] = [];
+if (series) {
+  seriesParts = (await getCollection('projects'))
+    .filter((p) => !p.data.draft && p.data.series === series)
+    .sort((a, b) => +a.data.date - +b.data.date)
+    .map((p) => ({ id: p.id, title: p.data.title }));
+}
 
 const related = (await getCollection('projects'))
   .filter((p) => !p.data.draft && p.data.category === category && p.id !== entry.id)
@@ -58,6 +70,10 @@ const jsonLd = {
       ))}
     </div>
 
+    {series && seriesParts.length > 1 && (
+      <SeriesNav series={series} parts={seriesParts} currentId={entry.id} />
+    )}
+
     {cover && (
       <img src={link(cover)} alt="" onerror="this.remove()"
            class="mt-8 w-full rounded-lg border border-[var(--border)]" />
@@ -69,6 +85,7 @@ const jsonLd = {
       <Content />
     </div>
 
+    {updates.length > 0 && <UpdateLog updates={updates} />}
     {bom.length > 0 && <Bom bom={bom} />}
     {models.length > 0 && <Model3D models={models} />}
 
@@ -105,6 +122,9 @@ const jsonLd = {
         </div>
       </section>
     )}
+
+    <ShareButtons title={title} />
+    <Comments />
   </article>
   <Lightbox />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />

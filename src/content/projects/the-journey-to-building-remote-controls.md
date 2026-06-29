@@ -2,6 +2,7 @@
 title: "The Journey to Building Remote Controls"
 date: 2013-07-14
 category: robotics
+series: wireless-robot
 featured: false
 tags: ["journey", "robotics", "arduino", "remote-control", "xbee"]
 status: complete

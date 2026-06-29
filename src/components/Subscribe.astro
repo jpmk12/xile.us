@@ -1,0 +1,26 @@
+---
+import { site } from '../lib/site';
+import { link } from '../lib/link';
+const n = site.newsletter;
+const emailEnabled = n.enabled && n.action;
+---
+<section class="border-t border-[var(--border)] grid-lines">
+  <div class="max-w-6xl mx-auto px-5 py-14">
+    <h2 class="text-2xl font-black tracking-tight uppercase">Follow the builds</h2>
+    <p class="mt-2 max-w-xl text-[var(--muted)]">
+      New flying machines, robots, and prints — get them as they post.
+    </p>
+    {emailEnabled ? (
+      <form action={n.action} method="post" target="_blank" class="mt-5 flex flex-wrap gap-2 max-w-md">
+        <input type="email" name="email" required placeholder="you@email.com" aria-label="Email"
+               class="flex-1 min-w-[12rem] bg-[var(--panel-soft)] border border-[var(--border)] rounded-md px-4 py-2.5 text-sm outline-none focus:border-[var(--accent-bright)]" />
+        <button type="submit" class="btn btn-solid">Subscribe</button>
+      </form>
+    ) : (
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href={link('/rss.xml')} class="btn btn-solid">Subscribe via RSS</a>
+        <a href={link('/flying')} class="btn btn-ghost">Browse flying →</a>
+      </div>
+    )}
+  </div>
+</section>

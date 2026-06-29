@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { prettify } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('projects')).filter((p) => !p.data.draft && p.data.series);
+  const names = Array.from(new Set(posts.map((p) => p.data.series)));
+  return names.map((series) => ({
+    params: { series },
+    props: {
+      series,
+      parts: posts
+        .filter((p) => p.data.series === series)
+        .sort((a, b) => +a.data.date - +b.data.date), // build order
+    },
+  }));
+}
+
+const { series, parts } = Astro.props;
+---
+<BaseLayout title={`${prettify(series)} — build log`} description={`A multi-part build log: ${prettify(series)}.`}>
+  <section class="max-w-6xl mx-auto px-5 py-16">
+    <p class="mono text-xs text-accent tracking-widest uppercase">// build log</p>
+    <h1 class="mt-3 text-4xl font-black tracking-tight uppercase">{prettify(series)}</h1>
+    <p class="mt-3 text-[var(--muted)]">{parts.length} parts, in build order.</p>
+    <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {parts.map((p) => <ProjectCard entry={p} />)}
+    </div>
+  </section>
+</BaseLayout>
