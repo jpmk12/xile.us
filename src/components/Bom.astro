@@ -1,0 +1,42 @@
+---
+interface Props { bom: { part: string; qty?: string; link?: string }[]; }
+const { bom } = Astro.props;
+const plain = bom.map((b) => `${b.qty ? b.qty + 'x ' : ''}${b.part}`).join('\n');
+---
+<section class="mt-12">
+  <div class="flex items-center justify-between gap-3">
+    <h2 class="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">// bill of materials</h2>
+    <button type="button" id="bom-copy" data-list={plain}
+            class="badge mono hover:text-[var(--accent-bright)] hover:border-[var(--accent-bright)] transition-colors">
+      Copy list
+    </button>
+  </div>
+  <div class="mt-4 card divide-y divide-[var(--border)]">
+    {bom.map((b) => (
+      <div class="flex items-center justify-between gap-4 p-3.5">
+        <div class="flex items-center gap-3 min-w-0">
+          {b.qty && <span class="badge mono flex-none">{b.qty}×</span>}
+          <span class="truncate">{b.part}</span>
+        </div>
+        {b.link && (
+          <a href={b.link} target="_blank" rel="noopener noreferrer"
+             class="mono text-xs text-accent flex-none hover:text-[var(--accent-bright)]">Buy →</a>
+        )}
+      </div>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var b = document.getElementById('bom-copy');
+    if (!b || !navigator.clipboard) return;
+    b.addEventListener('click', function () {
+      navigator.clipboard.writeText(b.dataset.list).then(function () {
+        var t = b.textContent;
+        b.textContent = 'Copied ✓';
+        setTimeout(function () { b.textContent = t; }, 1500);
+      });
+    });
+  })();
+</script>

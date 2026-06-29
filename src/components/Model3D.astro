@@ -1,0 +1,40 @@
+---
+import { link } from '../lib/link';
+interface Props { models: { label: string; file: string }[]; }
+const { models } = Astro.props;
+---
+<section class="mt-12">
+  <h2 class="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">// 3d files</h2>
+  <div class="mt-4 grid sm:grid-cols-2 gap-5">
+    {models.map((m) => {
+      const fmt = (m.file.split('.').pop() || '').toLowerCase();
+      return (
+        <figure class="card overflow-hidden">
+          <div class="model-3d aspect-[4/3] relative" data-src={link(m.file)} data-format={fmt}>
+            <span class="model-3d-hint absolute inset-0 flex items-center justify-center mono text-xs text-[var(--muted)]">
+              Loading 3D…
+            </span>
+          </div>
+          <figcaption class="flex items-center justify-between gap-3 p-3 border-t border-[var(--border)]">
+            <span class="truncate text-sm">{m.label}</span>
+            <a href={link(m.file)} download class="mono text-xs text-accent flex-none">{fmt.toUpperCase()} ↓</a>
+          </figcaption>
+        </figure>
+      );
+    })}
+  </div>
+  <p class="mt-3 mono text-[11px] text-[var(--faint)]">Drag to rotate · scroll to zoom</p>
+</section>
+
+<style>
+  .model-3d { cursor: grab; background: var(--code-bg); touch-action: none; }
+  .model-3d:active { cursor: grabbing; }
+  .model-3d canvas { display: block; width: 100%; height: 100%; }
+</style>
+
+<script>
+  // Lazy-load the (self-hosted) three.js viewer only when a model exists.
+  if (document.querySelector('.model-3d')) {
+    import('../viewer/model3d.js').then((m) => m.init());
+  }
+</script>

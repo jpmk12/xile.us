@@ -4,6 +4,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Badge from '../../components/Badge.astro';
 import Lightbox from '../../components/Lightbox.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import SpecCard from '../../components/SpecCard.astro';
+import Bom from '../../components/Bom.astro';
+import Model3D from '../../components/Model3D.astro';
 import { link } from '../../lib/link';
 import { fileMeta } from '../../lib/files';
 import { getCategory } from '../../lib/categories';
@@ -15,7 +18,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, date, tags, status, cover, summary, downloads, category } = entry.data;
+const { title, date, tags, status, cover, summary, downloads, category, specs, bom, models } = entry.data;
 const d = date.toISOString().slice(0, 10);
 const cat = getCategory(category);
 
@@ -60,9 +63,14 @@ const jsonLd = {
            class="mt-8 w-full rounded-lg border border-[var(--border)]" />
     )}
 
+    {specs.length > 0 && <SpecCard specs={specs} />}
+
     <div class="post mt-8">
       <Content />
     </div>
+
+    {bom.length > 0 && <Bom bom={bom} />}
+    {models.length > 0 && <Model3D models={models} />}
 
     {downloads.length > 0 && (
       <section class="mt-12">

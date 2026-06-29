@@ -51,6 +51,33 @@ collections:
       - { name: cover, label: Cover image, widget: image, required: false }
       - { name: draft, label: Draft, widget: boolean, default: false, required: false }
       - { name: legacyUrl, label: Legacy URL, widget: hidden, required: false }
+      - name: specs
+        label: Specs
+        widget: list
+        required: false
+        label_singular: Spec
+        summary: "{{fields.label}}: {{fields.value}}"
+        fields:
+          - { name: label, label: Label, widget: string }
+          - { name: value, label: Value, widget: string }
+      - name: bom
+        label: Bill of materials
+        widget: list
+        required: false
+        label_singular: Part
+        summary: "{{fields.qty}}× {{fields.part}}"
+        fields:
+          - { name: part, label: Part, widget: string }
+          - { name: qty, label: Qty, widget: string, required: false }
+          - { name: link, label: Buy link, widget: string, required: false }
+      - name: models
+        label: 3D files (STL / 3MF)
+        widget: list
+        required: false
+        label_singular: Model
+        fields:
+          - { name: label, label: Label, widget: string }
+          - { name: file, label: File, widget: file }
       - name: downloads
         label: Downloads
         widget: list

@@ -8,6 +8,20 @@ status: complete
 summary: "I have been working on building a custom Quad Copter with parts ordered from Hobby King. Materials List: TURNIGY Plush 25amp Speed Controller (4) D2822/14\u2026"
 cover: "/legacy-uploads/2013/11/quad.jpg"
 legacyUrl: "/building-a-quadcopter/"
+specs:
+  - { label: "Frame", value: "Hobbyking X550 Glass Fiber · 550mm" }
+  - { label: "Configuration", value: "Quad (X)" }
+  - { label: "Motors", value: "4 × D2822/14 1450kv" }
+  - { label: "ESCs", value: "4 × Turnigy Plush 25A" }
+  - { label: "Flight controller", value: "Hobbyking KK2.0" }
+  - { label: "Radio", value: "Turnigy 9X · Mode 2" }
+bom:
+  - { part: "Hobbyking X550 Glass Fiber Quadcopter Frame 550mm", qty: "1", link: "http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=24151" }
+  - { part: "D2822/14 Brushless Outrunner 1450kv", qty: "4", link: "http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=12916" }
+  - { part: "TURNIGY Plush 25amp Speed Controller", qty: "4", link: "http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=2163" }
+  - { part: "Hobbyking KK2.0 Multi-rotor LCD Flight Control Board", qty: "1", link: "http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=24723" }
+  - { part: "Hobby King Quadcopter Power Distribution Board", qty: "1", link: "http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=23140" }
+  - { part: "Turnigy 9X 9Ch Transmitter w/ 8ch Receiver (Mode 2, v2)", qty: "1", link: "http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=8992" }
 ---
 I have been working on building a custom Quad Copter with parts ordered from Hobby King.
 <h1><a href="/legacy-uploads/2013/11/quad.jpg"><img class="alignnone size-medium wp-image-76" alt="quad" src="/legacy-uploads/2013/11/quad-300x225.jpg" width="300" height="225" /></a> <a href="http://iframewidth=560height=315src=//www.youtube.com/embed/RBycGP0VwaAframeborder=0allowfullscreen/iframe"><iframe src="https://www.youtube.com/embed/RBycGP0VwaA" height="315" width="560" allowfullscreen="" frameborder="0"></iframe></a><a href="http://www.youtube.com/watch?v=RBycGP0VwaA">

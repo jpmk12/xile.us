@@ -1,0 +1,15 @@
+---
+interface Props { specs: { label: string; value: string }[]; }
+const { specs } = Astro.props;
+---
+<div class="card p-5 mt-8">
+  <h2 class="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">// specs</h2>
+  <dl class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
+    {specs.map((s) => (
+      <div>
+        <dt class="mono text-[11px] uppercase tracking-wider text-[var(--muted)]">{s.label}</dt>
+        <dd class="mt-0.5 text-sm font-semibold">{s.value}</dd>
+      </div>
+    ))}
+  </dl>
+</div>
