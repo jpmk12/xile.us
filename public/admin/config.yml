@@ -119,3 +119,25 @@ collections:
       - { name: order, label: Sort order (lower first), widget: number, default: 0, required: false, value_type: int }
       - { name: draft, label: Draft, widget: boolean, default: false, required: false }
       - { name: body, label: Notes (optional), widget: markdown, required: false }
+
+  - name: apps
+    label: Apps (flying / tools)
+    label_singular: App
+    folder: "src/content/apps"
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: yaml-frontmatter
+    summary: "{{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Description (brief), widget: text }
+      - { name: screenshot, label: Screenshot, widget: image, required: false }
+      - { name: repo, label: Repo URL, widget: string, required: false }
+      - { name: url, label: Live URL, widget: string, required: false }
+      - { name: tech, label: Tech / stack, widget: list, default: [], required: false }
+      - { name: featured, label: Featured, widget: boolean, default: false, required: false }
+      - { name: order, label: Sort order (lower first), widget: number, default: 0, required: false, value_type: int }
+      - { name: draft, label: Draft, widget: boolean, default: false, required: false }
+      - { name: body, label: Notes (optional), widget: markdown, required: false }

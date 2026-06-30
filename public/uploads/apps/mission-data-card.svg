@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360">
+  <defs><pattern id="g" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0H0V32" fill="none" stroke="#141d30" stroke-width="1"/></pattern></defs>
+  <rect width="640" height="360" fill="#020617"/><rect width="640" height="360" fill="url(#g)"/>
+  <text x="320" y="210" font-size="140" text-anchor="middle" dominant-baseline="middle">📋</text>
+  <text x="28" y="44" font-family="monospace" font-size="18" fill="#34d399">// C-17 MDC</text>
+  <rect x="28" y="300" width="84" height="4" fill="#10b981"/>
+</svg>

@@ -84,3 +84,32 @@ describe('games integrity', () => {
     });
   }
 });
+
+const APPS_DIR = path.join(process.cwd(), 'src/content/apps');
+const appFiles = existsSync(APPS_DIR)
+  ? readdirSync(APPS_DIR).filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
+  : [];
+const apps = appFiles.map((f) => {
+  const { data } = matter(readFileSync(path.join(APPS_DIR, f), 'utf-8'));
+  return { file: f, data };
+});
+
+describe('apps integrity', () => {
+  for (const a of apps) {
+    describe(a.file, () => {
+      it('has a title and description', () => {
+        expect(typeof a.data.title).toBe('string');
+        expect(a.data.title.length).toBeGreaterThan(0);
+        expect(typeof a.data.description).toBe('string');
+        expect(a.data.description.length).toBeGreaterThan(0);
+      });
+      it('has valid links + an existing screenshot', () => {
+        if (a.data.screenshot)
+          expect(publicExists(a.data.screenshot), `screenshot ${a.data.screenshot}`).toBe(true);
+        for (const key of ['repo', 'url'] as const) {
+          if (a.data[key]) expect(/^https?:\/\//.test(a.data[key]), `${key} url`).toBe(true);
+        }
+      });
+    });
+  }
+});

@@ -48,4 +48,20 @@ const games = defineCollection({
   }),
 });
 
-export const collections = { projects, games };
+// Apps = software tools (e.g. flying / mission-planning apps) shown on /flying.
+const apps = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/apps' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    screenshot: z.string().optional(),
+    repo: z.string().optional(),
+    url: z.string().optional(),
+    tech: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),
+    order: z.number().default(0),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { projects, games, apps };
