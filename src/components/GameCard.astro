@@ -1,0 +1,35 @@
+---
+import { link } from '../lib/link';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { entry: CollectionEntry<'games'>; }
+const { entry } = Astro.props;
+const { title, description, screenshot, repo, play, tech, featured } = entry.data;
+---
+<article class="card group overflow-hidden flex flex-col">
+  <div class="aspect-[16/9] grid-lines border-b border-[var(--border)] relative flex items-center justify-center overflow-hidden">
+    <span class="chip absolute" style="width:48px;height:48px"><span>◆</span></span>
+    {screenshot && (
+      <img src={link(screenshot)} alt={`${title} screenshot`} loading="lazy" decoding="async"
+           onerror="this.remove()" class="relative w-full h-full object-cover" />
+    )}
+    {featured && (
+      <span class="absolute top-3 right-3 badge mono" style="color:var(--on-accent);background:var(--accent);border-color:var(--accent)">Featured</span>
+    )}
+  </div>
+  <div class="p-5 flex flex-col flex-1">
+    <h3 class="text-lg font-bold tracking-wide uppercase">{title}</h3>
+    {tech.length > 0 && (
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        {tech.map((t) => <span class="badge mono">{t}</span>)}
+      </div>
+    )}
+    <p class="mt-3 text-sm text-[var(--muted)] flex-1">{description}</p>
+    {(repo || play) && (
+      <div class="mt-4 flex flex-wrap gap-2">
+        {play && <a href={play} target="_blank" rel="noopener noreferrer" class="btn btn-solid">Play →</a>}
+        {repo && <a href={repo} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Code →</a>}
+      </div>
+    )}
+  </div>
+</article>

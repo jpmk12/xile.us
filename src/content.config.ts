@@ -31,4 +31,21 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { projects };
+// Games = a showcase of games built. One file per game; title + brief
+// description + screenshot, with optional repo/play links. See /games.
+const games = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/games' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    screenshot: z.string().optional(),
+    repo: z.string().optional(),
+    play: z.string().optional(),
+    tech: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),
+    order: z.number().default(0),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { projects, games };

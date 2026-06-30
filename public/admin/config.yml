@@ -97,3 +97,25 @@ collections:
           - { name: label, label: Label, widget: string }
           - { name: file, label: File, widget: file }
       - { name: body, label: Write-up, widget: markdown }
+
+  - name: games
+    label: Games
+    label_singular: Game
+    folder: "src/content/games"
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: yaml-frontmatter
+    summary: "{{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Description (brief), widget: text }
+      - { name: screenshot, label: Screenshot, widget: image, required: false }
+      - { name: repo, label: Repo URL, widget: string, required: false }
+      - { name: play, label: Play URL, widget: string, required: false }
+      - { name: tech, label: Tech / engine, widget: list, default: [], required: false }
+      - { name: featured, label: Featured, widget: boolean, default: false, required: false }
+      - { name: order, label: Sort order (lower first), widget: number, default: 0, required: false, value_type: int }
+      - { name: draft, label: Draft, widget: boolean, default: false, required: false }
+      - { name: body, label: Notes (optional), widget: markdown, required: false }

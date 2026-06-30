@@ -55,3 +55,32 @@ describe('content integrity', () => {
     });
   }
 });
+
+const GAMES_DIR = path.join(process.cwd(), 'src/content/games');
+const gameFiles = existsSync(GAMES_DIR)
+  ? readdirSync(GAMES_DIR).filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
+  : [];
+const games = gameFiles.map((f) => {
+  const { data } = matter(readFileSync(path.join(GAMES_DIR, f), 'utf-8'));
+  return { file: f, data };
+});
+
+describe('games integrity', () => {
+  for (const g of games) {
+    describe(g.file, () => {
+      it('has a title and description', () => {
+        expect(typeof g.data.title).toBe('string');
+        expect(g.data.title.length).toBeGreaterThan(0);
+        expect(typeof g.data.description).toBe('string');
+        expect(g.data.description.length).toBeGreaterThan(0);
+      });
+      it('has valid links + an existing screenshot', () => {
+        if (g.data.screenshot)
+          expect(publicExists(g.data.screenshot), `screenshot ${g.data.screenshot}`).toBe(true);
+        for (const key of ['repo', 'play'] as const) {
+          if (g.data[key]) expect(/^https?:\/\//.test(g.data[key]), `${key} url`).toBe(true);
+        }
+      });
+    });
+  }
+});
